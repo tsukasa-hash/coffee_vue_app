@@ -4,7 +4,7 @@
     <h1>{{ msg }}</h1>
     <b-button variant="primary">bootstrap-vue-btn</b-button>
     <router-link to="/top">top pageを表示</router-link>
-    <button class="btn btn-primary" @click="showTopPage">top pageへ遷移</button>
+
 
     <router-view></router-view>
   </div>
