@@ -5,23 +5,22 @@
     <b-button variant="primary">bootstrap-vue-btn</b-button>
     <router-link to="/top">top pageを表示</router-link>
 
-
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   props: {
-    msg: String
+    msg: String,
   },
   methods: {
     showTopPage() {
-      this.$router.push('/top');
-    }
-  }
-}
+      this.$router.push("/top");
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
