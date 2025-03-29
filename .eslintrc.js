@@ -1,8 +1,10 @@
 module.exports = {
     root: true,
     // extends: ['standard', 'plugin:vue/essential', 'plugin:prettier/recommended'],
-    extends: ['plugin:vue/essential', 'plugin:prettier/recommended'],
+    extends: ['plugin:vue/essential', 'plugin:prettier/recommended',
+      "eslint-config-prettier",],
     plugins: ['vue'],
+    parser: "@typescript-eslint/parser",
     rules: {
       'prettier/prettier': [
         'error',
@@ -16,5 +18,18 @@ module.exports = {
           endOfLine: 'auto'
         },
       ],
+      "@typescript-eslint/typedef": [
+      "error",
+      {
+        variableDeclaration: true,
+        memberVariableDeclaration: true,
+        propertyDeclaration: true,
+        variableDeclarationIgnoreFunction: true,
+        arrayDestructuring: true,
+        objectDestructuring: true,
+        parameter: true,
+        arrowParameter: true,
+      },
+    ],
     },
   }
