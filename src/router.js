@@ -4,6 +4,7 @@ import TopPage from './components/TopPage.vue'
 import MethodRegister from './components/MethodRegister.vue'
 import MethodDetailViewer from './components/MethodDetailViewer.vue'
 import MethodListViewer from './components/MethodListViewer.vue'
+import BrewingViewer from './components/BrewingViewer.vue'
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         path: '/method_list_viewer',
         name: 'method_list_viewer',
         component: MethodListViewer
+    },
+    {
+        path: '/brewing',
+        name: 'brewing',
+        component: BrewingViewer
     },
 ]
 
