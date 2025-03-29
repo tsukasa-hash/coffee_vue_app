@@ -2,14 +2,9 @@
   <div>
     <h1>タイマーでカウントダウンをする</h1>
     <br />
-    {{ minutes }}:{{ seconds }}
+    {{ timer.getMinutes() }}:{{ timer.getSeconds() }}
     <br />
-    <button class="btn btn-light" @click="startTimer" v-if="!timerIsRunning">
-      スタート
-    </button>
-    <button class="btn btn-light" @click="startTimer" v-if="timerIsRunning">
-      再開
-    </button>
+    <button class="btn btn-light" @click="startTimer">スタート</button>
     <button class="btn btn-light" @click="stopTimer">ストップ</button>
     <button class="btn btn-light" @click="resetTimer">リセット</button>
     <br />
@@ -19,45 +14,28 @@
   </div>
 </template>
 <script>
+import Timer from "./timer/Timer";
 export default {
   data() {
     return {
-      tick: null,
-      timerIsRunning: false,
-      millisecondsTime: 0,
+      timer: Timer,
     };
   },
-  created() {},
+  created() {
+    // TODO：初期値を外部から取得する
+    // mountedではコンパイルに通らない
+    this.timer = new Timer(70);
+  },
   methods: {
-    // TODO:状態遷移がある。停止中、実行中、一時停止中
-    // TODO:0秒になったら停止する
+    // TODO:0秒になったら次のタイマーを実行する
     startTimer() {
-      const startTime = Date.now();
-      this.tick = setInterval(() => {
-        // TODO:変数名を変更する。millisecondではなく秒
-        this.millisecondsTime = 70 - this.durationFromStart(startTime);
-      }, 1000);
-      this.timerIsRunning = true;
-    },
-    durationFromStart(startTime) {
-      return ((Date.now() - startTime) * 0.001).toFixed(0);
+      this.timer.start();
     },
     stopTimer() {
-      clearInterval(this.tick);
-      this.timerIsRunning = false;
+      this.timer.stop();
     },
-    resetTimer() {},
-  },
-  computed: {
-    minutes: function () {
-      return Math.floor((this.millisecondsTime / 60) % 60)
-        .toString()
-        .padStart(2, "0");
-    },
-    seconds: function () {
-      return Math.floor(this.millisecondsTime % 60)
-        .toString()
-        .padStart(2, "0");
+    resetTimer() {
+      this.timer.reset();
     },
   },
 };
