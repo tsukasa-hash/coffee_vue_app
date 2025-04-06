@@ -1,47 +1,47 @@
-import { createRouter,createWebHistory } from 'vue-router';
-import Home from './views/Home.vue'
-import TopPage from './components/TopPage.vue' 
-import MethodRegister from './components/MethodRegister.vue'
-import MethodDetailViewer from './components/MethodDetailViewer.vue'
-import MethodListViewer from './components/MethodListViewer.vue'
-import BrewingViewer from './components/BrewingViewer.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import Home from "./views/Home.vue";
+import TopPage from "./components/TopPage.vue";
+import MethodRegister from "./components/MethodRegister.vue";
+import MethodDetailViewer from "./components/MethodDetailViewer.vue";
+import MethodListViewer from "./components/MethodListViewer.vue";
+import BrewingViewer from "./components/BrewingViewer.vue";
 
 const routes = [
-    {
-      path: '/',
-      name: 'Home',
-      component: Home
-    },
-    {
-        path: '/top',
-        name: 'top',
-        component: TopPage
-    },
-    {
-        path: '/method_register',
-        name: 'method_register',
-        component: MethodRegister
-    },
-    {
-        path: '/method_detail_viewer',
-        name: 'method_detail_viewer',
-        component: MethodDetailViewer
-    },
-    {
-        path: '/method_list_viewer',
-        name: 'method_list_viewer',
-        component: MethodListViewer
-    },
-    {
-        path: '/brewing',
-        name: 'brewing',
-        component: BrewingViewer
-    },
-]
+  {
+    path: "/",
+    name: "Home",
+    component: Home,
+  },
+  {
+    path: "/top",
+    name: "top",
+    component: TopPage,
+  },
+  {
+    path: "/method_register",
+    name: "method_register",
+    component: MethodRegister,
+  },
+  {
+    path: "/method_detail_viewer",
+    name: "method_detail_viewer",
+    component: MethodDetailViewer,
+  },
+  {
+    path: "/method_list_viewer",
+    name: "method_list_viewer",
+    component: MethodListViewer,
+  },
+  {
+    path: "/brewing",
+    name: "brewing",
+    component: BrewingViewer,
+  },
+];
 
 const router = createRouter({
-    history: createWebHistory(), // HTML5 History モード
-    routes,
-})
- 
+  history: createWebHistory(), // HTML5 History モード
+  routes,
+});
+
 export default router;
