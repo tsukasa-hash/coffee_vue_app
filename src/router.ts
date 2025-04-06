@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "./views/Home.vue";
+import HomeOfCoffee from "./views/HomeOfCoffee.vue";
 import TopPage from "./components/TopPage.vue";
 import MethodRegister from "./components/MethodRegister.vue";
 import MethodDetailViewer from "./components/MethodDetailViewer.vue";
@@ -9,8 +9,8 @@ import BrewingViewer from "./components/BrewingViewer.vue";
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "HomeOfCoffee",
+    component: HomeOfCoffee,
   },
   {
     path: "/top",

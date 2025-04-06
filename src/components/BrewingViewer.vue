@@ -1,24 +1,46 @@
 <template>
   <div>
     <h1>タイマーでカウントダウンをする</h1>
-    <br />
+    <br>
     {{ timer.getMinutes() }}:{{ timer.getSeconds() }}
-    <br />
-    <button class="btn btn-light" @click="startTimer">スタート</button>
-    <button class="btn btn-light" @click="stopTimer">ストップ</button>
-    <button class="btn btn-light" @click="resetTimer">リセット</button>
-    <br />
-    <router-link to="/top">メニューに戻る</router-link>
-    <br />
-    <router-link to="/">トップページに戻る</router-link>
+    <br>
+    <button
+      class="btn btn-light"
+      :disabled="timer.isRunning()"
+      @click="startTimer"
+    >
+      スタート
+    </button>
+    <button
+      class="btn btn-light"
+      @click="stopTimer"
+    >
+      ストップ
+    </button>
+    <button
+      class="btn btn-light"
+      @click="resetTimer"
+    >
+      リセット
+    </button>
+    <br>
+    <router-link to="/top">
+      メニューに戻る
+    </router-link>
+    <br>
+    <router-link to="/">
+      トップページに戻る
+    </router-link>
   </div>
 </template>
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import Timer from "./timer/Timer";
-export default {
-  data() {
+
+export default defineComponent({
+  data(): { timer: Timer | null } {
     return {
-      timer: Timer,
+      timer: null,
     };
   },
   created() {
@@ -29,14 +51,15 @@ export default {
   methods: {
     // TODO:0秒になったら次のタイマーを実行する
     startTimer() {
-      this.timer.start();
+      this.timer?.start(); // null チェックして安全に呼び出し
     },
     stopTimer() {
-      this.timer.stop();
+      this.timer?.stop();
     },
     resetTimer() {
-      this.timer.reset();
+      this.timer?.reset();
     },
   },
-};
+});
+
 </script>
