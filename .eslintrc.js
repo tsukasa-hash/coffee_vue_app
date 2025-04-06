@@ -1,35 +1,32 @@
 module.exports = {
-    root: true,
-    // extends: ['standard', 'plugin:vue/essential', 'plugin:prettier/recommended'],
-    extends: ['plugin:vue/essential', 'plugin:prettier/recommended',
-      "eslint-config-prettier",],
-    plugins: ['vue'],
+  root: true,
+  parser: "vue-eslint-parser",
+  // parser: "vue-eslint-parser",
+  plugins: ["vue", "@typescript-eslint"],
+  // plugins: ["vue", "@typescript-eslint"],
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  parserOptions: {
+    ecmaVersion: "latest",
     parser: "@typescript-eslint/parser",
-    rules: {
-      'prettier/prettier': [
-        'error',
-        {
-          // 行末のセミコロンはなし
-          semi: '--no-semi',
-          // 文字列の囲みをシングルクオートでなくて良い
-          singleQuote: false,
-          trailingComma: 'es5',
-          // 行末はなんであってもよい
-          endOfLine: 'auto'
-        },
-      ],
-      "@typescript-eslint/typedef": [
-      "error",
-      {
-        variableDeclaration: true,
-        memberVariableDeclaration: true,
-        propertyDeclaration: true,
-        variableDeclarationIgnoreFunction: true,
-        arrayDestructuring: true,
-        objectDestructuring: true,
-        parameter: true,
-        arrowParameter: true,
-      },
-    ],
-    },
-  }
+    sourceType: "module",
+    project: "./tsconfig.eslint.json",
+    extraFileExtensions: [".vue"],
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    tsconfigRootDir: __dirname,
+  },
+  ignorePatterns: ["dist"],
+  extends: [
+    "plugin:vue/vue3-recommended",
+    "plugin:vue/vue3-strongly-recommended",
+    "airbnb-base",
+    "airbnb-typescript/base",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+  ],
+  rules: {
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/quotes": ["error", "double"],
+  },
+};
