@@ -13,12 +13,14 @@
     </button>
     <button
       class="btn btn-light"
+      :disabled="timer.isPausing()"
       @click="stopTimer"
     >
       ストップ
     </button>
     <button
       class="btn btn-light"
+      :disabled="timer.isRunning() || timer.isStopping()"
       @click="resetTimer"
     >
       リセット

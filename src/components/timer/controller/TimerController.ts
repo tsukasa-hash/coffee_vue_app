@@ -12,8 +12,6 @@ export class NormalTimerController implements TimerController {
 
   execute(t: Timer): void {
     t.setRunning();
-    console.log(t);
-    console.log(t.isRunning());
 
     const startTime = Date.now();
     this.tick = setInterval(() => {

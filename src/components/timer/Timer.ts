@@ -67,12 +67,9 @@ export default class Timer {
     this.state = Timer.runningState;
   }
 
+  // ===では判定できないためinstanceofを使う
   public isRunning(): boolean {
-    console.log(this.state);
-    console.log(Timer.runningState);
-
-    // return this.state == Timer.runningState;
-    return this.state === Timer.runningState;
+    return this.state instanceof RunningTimerState;
   }
 
   public setStopping(): void {
@@ -80,7 +77,7 @@ export default class Timer {
   }
 
   public isStopping(): boolean {
-    return this.state === Timer.stoppingState;
+    return this.state instanceof StoppingTimerState;
   }
 
   public setPausing(): void {
@@ -88,7 +85,7 @@ export default class Timer {
   }
 
   public isPausing(): boolean {
-    return this.state === Timer.pausingState;
+    return this.state instanceof PausingTimerState;
   }
 
   execute(): void {
