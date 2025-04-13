@@ -1,9 +1,7 @@
 module.exports = {
   root: true,
   parser: "vue-eslint-parser",
-  // parser: "vue-eslint-parser",
   plugins: ["vue", "@typescript-eslint"],
-  // plugins: ["vue", "@typescript-eslint"],
   env: {
     browser: true,
     es2021: true,
