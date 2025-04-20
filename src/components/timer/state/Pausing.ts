@@ -3,7 +3,7 @@
 import Timer from "../Timer";
 import { TimerState } from "./TimerState";
 
-export class PausingTimerState implements TimerState {
+export class Pausing implements TimerState {
   public start(t: Timer) {
     t.setRunning();
     t.execute();

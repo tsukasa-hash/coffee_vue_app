@@ -12,12 +12,19 @@ export class NormalTimerController implements TimerController {
 
   execute(t: Timer): void {
     t.setRunning();
-
     const startTime = Date.now();
+    const remainingTime = t.getRemainingTime();
     this.tick = setInterval(() => {
-      const remainingTime = t.getInitialTime() - NormalTimerController.durationFromStart(startTime);
-      t.setMinutes(NormalTimerController.convertIntoMm(remainingTime));
-      t.setSeconds(NormalTimerController.convertIntoSs(remainingTime));
+      const elapsed = NormalTimerController.durationFromStart(startTime);
+      const currentRemaining = remainingTime - elapsed;
+
+      t.setRemainingTime(currentRemaining);
+      t.setMinutes(NormalTimerController.convertIntoMm(currentRemaining));
+      t.setSeconds(NormalTimerController.convertIntoSs(currentRemaining));
+
+      // 更新通知
+      // TODO:observerパターンにしたい。このクラスはTimerを操作するだけで、誰かに通知することは想定していない。
+      t.notifyUpdate?.();
       if (remainingTime === 0) {
         this.suspend();
         alert("タイマーが終了しました。");
@@ -47,7 +54,9 @@ export class NormalTimerController implements TimerController {
 
   // eslint-disable-next-line class-methods-use-this
   initialize(t: Timer): void {
+    t.setRemainingTime(t.getInitialTime());
     t.setMinutes(NormalTimerController.convertIntoMm(t.getInitialTime()));
     t.setSeconds(NormalTimerController.convertIntoSs(t.getInitialTime()));
+    t.notifyUpdate?.();
   }
 }

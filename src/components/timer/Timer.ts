@@ -1,20 +1,18 @@
 /* eslint-disable import/no-cycle */
-import { NormalTimerController, TimerController } from "./controller/TimerController";
-import { PausingTimerState } from "./state/PausingTimerState";
-import { RunningTimerState } from "./state/RunningTimerState";
-import { StoppingTimerState } from "./state/StoppingTimerState";
+import { Pausing } from "./state/Pausing";
+import { Running } from "./state/Running";
+import { Stopping } from "./state/Stopping";
 import { TimerState } from "./state/TimerState";
+import { TimerActions } from "./TimerActions";
 
-export default class Timer {
-  private static stoppingState: TimerState = new StoppingTimerState();
+export default abstract class Timer extends TimerActions {
+  private static stopping: TimerState;
 
-  private static runningState: TimerState = new RunningTimerState();
+  private static running: TimerState;
 
-  private static pausingState: TimerState = new PausingTimerState();
+  private static pausing: TimerState;
 
-  private timerController: TimerController = new NormalTimerController();
-
-  private state: TimerState = Timer.stoppingState;
+  private state: TimerState;
 
   private minutes: string = "";
 
@@ -22,9 +20,18 @@ export default class Timer {
 
   private initialSecondsTime: number;
 
+  private remainingSecondsTime: number;
+
+  private onUpdateCallback: (() => void) | null = null;
+
   constructor(seconds: number) {
+    super();
+    Timer.stopping = new Stopping();
+    Timer.running = new Running();
+    Timer.pausing = new Pausing();
+    this.state = Timer.stopping;
     this.initialSecondsTime = seconds;
-    this.initialize();
+    this.remainingSecondsTime = seconds;
   }
 
   public setInitialTime(arg: number) {
@@ -33,6 +40,14 @@ export default class Timer {
 
   public getInitialTime(): number {
     return this.initialSecondsTime;
+  }
+
+  public getRemainingTime(): number {
+    return this.remainingSecondsTime;
+  }
+
+  public setRemainingTime(seconds: number): void {
+    this.remainingSecondsTime = seconds;
   }
 
   public setMinutes(arg: string): void {
@@ -64,39 +79,38 @@ export default class Timer {
   }
 
   public setRunning(): void {
-    this.state = Timer.runningState;
+    this.state = Timer.running;
   }
 
   // ===では判定できないためinstanceofを使う
   public isRunning(): boolean {
-    return this.state instanceof RunningTimerState;
+    return this.state instanceof Running;
   }
 
   public setStopping(): void {
-    this.state = Timer.stoppingState;
+    this.state = Timer.stopping;
   }
 
   public isStopping(): boolean {
-    return this.state instanceof StoppingTimerState;
+    return this.state instanceof Stopping;
   }
 
   public setPausing(): void {
-    this.state = Timer.pausingState;
+    this.state = Timer.pausing;
   }
 
   public isPausing(): boolean {
-    return this.state instanceof PausingTimerState;
+    return this.state instanceof Pausing;
   }
 
-  execute(): void {
-    this.timerController.execute(this);
+  // 画面通知用のコールバック関数
+  setUpdateCallback(callback: () => void): void {
+    this.onUpdateCallback = callback;
   }
 
-  suspend(): void {
-    this.timerController.suspend();
-  }
-
-  initialize(): void {
-    this.timerController.initialize(this);
+  public notifyUpdate(): void {
+    if (this.onUpdateCallback) {
+      this.onUpdateCallback();
+    }
   }
 }

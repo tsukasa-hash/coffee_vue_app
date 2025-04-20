@@ -4,7 +4,7 @@
 import Timer from "../Timer";
 import { TimerState } from "./TimerState";
 
-export class RunningTimerState implements TimerState {
+export class Running implements TimerState {
   public start(_t: Timer) {
     // 何もしない
   }
