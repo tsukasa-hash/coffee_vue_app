@@ -29,14 +29,9 @@
         </label>
       </div>
       <br>
-      {{ methodId }}
     </div>
     <div v-if="methodIsSelected">
-      <!-- TODO:methodIdを渡し、タイトルに表示する -->
-      <!-- 2025/3/26 オブジェクトは渡せたが、値を表示できない -->
-      <!-- 2025/3/27 selectedMethodをオブジェクト型として渡したい -->
       <MethodDetailViewer
-        :method-id="methodId"
         :selected-method="selectedMethod"
       />
     </div>
@@ -52,36 +47,33 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-// import MethodDetailViewer from "./MethodDetailViewer.vue";
-
-class Method {
-  private methodId: string = "";
-
-  private methodName: string = "";
-}
+import Method from "./method/Method";
+import MethodDetailViewer from "./MethodDetailViewer.vue";
 
 export default defineComponent({
+  components: {
+    MethodDetailViewer,
+  },
   data(): { methods: Method[] | null
   , method: Method | null
   , methodIsSelected: boolean
   , methodId: string
-  , selectedMethod: Method | null } {
+  , selectedMethod: Method | undefined } {
     return {
       methods: null,
-      method: null,
+      method: new Method(),
       methodIsSelected: false,
       methodId: "",
-      selectedMethod: null,
+      selectedMethod: new Method(),
     };
   },
   watch: {
     methodId() {
       this.methodIsSelected = this.methodId !== null;
-      // TODO:選ばれたmethodIdをもつmethodをmethodsから取り出す or チェックが付いたmethodを設定する
-      // this.selectedMethod = this.methods.filter((m) => m.id === this.methodId);
-      // this.selectedMethod = JSON.parse(
-      //   this.methods.filter((m) => m.id === this.methodId)
-      // );
+      // 選ばれたmethodIdをもつmethodをmethodsから取り出す
+      const found = this.methods?.find((m) => m.getId() === this.methodId);
+      // 2025/3/27 selectedMethodをMethod型として渡す。これをしないとMethodDetailViewer.vueでMethod型として扱えない
+      this.selectedMethod = found ? Object.assign(new Method(), found) : undefined;
     },
   },
   methods: {
@@ -90,7 +82,7 @@ export default defineComponent({
         .get("http://127.0.0.1:5000/api/get_methods")
         .then((res: { data: { isSuccess: boolean; methods: Method[]; }; }) => {
           if (res.data.isSuccess) {
-            this.methods = res.data.methods;
+            this.methods = res.data.methods.map((method) => Object.assign(new Method(), method));
           } else {
             alert("リクエストは失敗しました。");
           }
@@ -102,49 +94,6 @@ export default defineComponent({
     },
   },
 });
-// export default {
-//   name: "MethodListViewer",
-//   components: {
-//     MethodDetailViewer,
-//   },
-//   // data: () => ({
-//   //   methods: null,
-//   //   method: {
-//   //     methodId: null,
-//   //     methodName: null,
-//   //   },
-//   //   methodIsSelected: false,
-//   //   methodId: null,
-//   //   selectedMethod: null,
-//   // }),
-//   watch: {
-//     methodId() {
-//       this.methodIsSelected = this.methodId !== null;
-//       // TODO:選ばれたmethodIdをもつmethodをmethodsから取り出す or チェックが付いたmethodを設定する
-//       this.selectedMethod = this.methods.filter((m) => m.id === this.methodId);
-//       // this.selectedMethod = JSON.parse(
-//       //   this.methods.filter((m) => m.id === this.methodId)
-//       // );
-//     },
-//   },
-//   methods: {
-//     async getMethods() {
-//       await this.axios
-//         .get("http://127.0.0.1:5000/api/get_methods")
-//         .then((res) => {
-//           if (res.data.isSuccess) {
-//             this.methods = res.data.methods;
-//           } else {
-//             alert("リクエストは失敗しました。");
-//           }
-//         })
-//         .catch(() => {
-//           this.isSuccess = false;
-//           alert("通信中にエラーが発生しました。");
-//         });
-//     },
-//   },
-// };
 </script>
 <style scoped>
 .radio-inline__input {

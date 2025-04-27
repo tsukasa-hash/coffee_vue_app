@@ -120,7 +120,6 @@
               <button
                 type="submit"
                 class="btn btn-primary"
-                :disabled="true"
                 @click="register"
               >
                 登録
@@ -139,46 +138,89 @@
     </router-link>
   </div>
 </template>
-<script>
-export default {
-  name: "MethodRegister",
-  data: () => ({
-    methodName: null,
-    amountOfCoffeePowder: null,
-    amountOfACupOfCoffee: null,
-    amountOfHotWater: null,
-    temperatureOfHotWater: null,
-    typeOfDripper: null,
-    isSuccess: false,
-    message: null,
-  }),
-  //   methods: {
-  //     async register() {
-  //       const req = JSON.stringify({
-  //         methodName: this.methodName,
-  //         amountOfCoffeePowder: this.amountOfCoffeePowder,
-  //         amountOfACupOfCoffee: this.amountOfACupOfCoffee,
-  //         amountOfHotWater: this.amountOfHotWater,
-  //         temperatureOfHotWater: this.temperatureOfHotWater,
-  //         typeOfDripper: this.typeOfDripper,
-  //       });
+<script lang="ts">
+import { defineComponent } from "vue";
+import { AxiosResponse } from "axios";
+import { ApiResponse } from "./response/ApiResponse";
 
-//       await this.axios
-//         .post("http://127.0.0.1:5000/api/post_method", req)
-//         .then((res) => {
-//           if (res.data.isSuccess) {
-//             alert(res.data.message);
-//           } else {
-//             alert("リクエストは失敗しました。");
-//           }
-//         })
-//         .catch(() => {
-//           this.isSuccess = false;
-//           alert("通信中にエラーが発生しました。");
-//         });
-//     },
+export default defineComponent({
+  data() :{ methodName: string, amountOfCoffeePowder: string, amountOfACupOfCoffee: string
+  , amountOfHotWater: string, temperatureOfHotWater:string, typeOfDripper: string
+  , isSuccess: boolean, message: string } {
+    return {
+      methodName: "",
+      amountOfCoffeePowder: "",
+      amountOfACupOfCoffee: "",
+      amountOfHotWater: "",
+      temperatureOfHotWater: "",
+      typeOfDripper: "",
+      isSuccess: false,
+      message: "",
+    };
+  },
+  methods: {
+    async register() {
+      const req = JSON.stringify({
+        methodName: this.methodName,
+        amountOfCoffeePowder: this.amountOfCoffeePowder,
+        amountOfACupOfCoffee: this.amountOfACupOfCoffee,
+        amountOfHotWater: this.amountOfHotWater,
+        temperatureOfHotWater: this.temperatureOfHotWater,
+        typeOfDripper: this.typeOfDripper,
+      });
+
+      await this.axios
+        .post("http://127.0.0.1:5000/api/post_method", req)
+        .then((res: AxiosResponse<ApiResponse>) => {
+          alert(res.data.isSuccess ? res.data.message : "リクエストは失敗しました。");
+        })
+        .catch(() => {
+          this.isSuccess = false;
+          alert("通信中にエラーが発生しました。");
+        });
+    },
+  },
+
+});
+// export default {
+// name: "MethodRegister",
+// data: () => ({
+//   methodName: null,
+//   amountOfCoffeePowder: null,
+//   amountOfACupOfCoffee: null,
+//   amountOfHotWater: null,
+//   temperatureOfHotWater: null,
+//   typeOfDripper: null,
+//   isSuccess: false,
+//   message: null,
+// }),
+// methods: {
+//   async register() {
+//     const req = JSON.stringify({
+//       methodName: this.methodName,
+//       amountOfCoffeePowder: this.amountOfCoffeePowder,
+//       amountOfACupOfCoffee: this.amountOfACupOfCoffee,
+//       amountOfHotWater: this.amountOfHotWater,
+//       temperatureOfHotWater: this.temperatureOfHotWater,
+//       typeOfDripper: this.typeOfDripper,
+//     });
+
+//     await this.axios
+//       .post("http://127.0.0.1:5000/api/post_method", req)
+//       .then((res) => {
+//         if (res.data.isSuccess) {
+//           alert(res.data.message);
+//         } else {
+//           alert("リクエストは失敗しました。");
+//         }
+//       })
+//       .catch(() => {
+//         this.isSuccess = false;
+//         alert("通信中にエラーが発生しました。");
+//       });
 //   },
-};
+// },
+// };
 </script>
 <style scoped>
 </style>
