@@ -9,7 +9,7 @@
               id="c_form-h"
               class=""
             >
-              <div class="form-group row">
+              <div class=" row">
                 <label
                   for="methodName"
                   class="col-2 col-form-label"
@@ -22,6 +22,24 @@
                   <input
                     id="methodName"
                     v-model="methodName"
+                    type="text"
+                    class="form-control"
+                  >
+                </div>
+              </div>
+              <div class="form-group row">
+                <label
+                  for="typeOfCoffeePowder"
+                  class="col-2 col-form-label"
+                  style=""
+                >コーヒーの粉</label>
+                <div
+                  class="col-10 col-md-4"
+                  style=""
+                >
+                  <input
+                    id="typeOfCoffeePowder"
+                    v-model="typeOfCoffeePowder"
                     type="text"
                     class="form-control"
                   >
@@ -117,12 +135,77 @@
                   >
                 </div>
               </div>
+              <div class="form-group row">
+                <label
+                  for="memo"
+                  class="col-2 col-form-label"
+                  style=""
+                >メモ</label>
+                <div
+                  class="col-10 col-md-4"
+                  style=""
+                >
+                  <input
+                    id="memo"
+                    v-model="memo"
+                    type="text"
+                    class="form-control"
+                  >
+                </div>
+              </div>
+              <div style="display: flex; flex-wrap: wrap">
+                <h2 style="text-align: left">
+                  手順
+                </h2>
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  style="width: 72px; height: 44px;"
+                  @click="createRow"
+                >
+                  +追加
+                </button>
+              </div>
+              <table>
+                <tbody>
+                  <tr
+                    v-for="(row, index) in rows"
+                    :key="index"
+                  >
+                    <td>
+                      <input
+                        v-model="row.description"
+                        type="text"
+                      >
+                    </td>
+                    <td>
+                      <input
+                        v-model="row.amount"
+                        type="text"
+                      >
+                    </td>
+                    <td>
+                      <input
+                        v-model="row.time"
+                        type="text"
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               <button
                 type="submit"
                 class="btn btn-primary"
                 @click="register"
               >
                 登録
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                @click="update"
+              >
+                更新
               </button>
             </form>
           </div>
@@ -142,31 +225,65 @@
 import { defineComponent } from "vue";
 import { AxiosResponse } from "axios";
 import { ApiResponse } from "./response/ApiResponse";
+import Procedure from "./method/Procedure";
 
 export default defineComponent({
-  data() :{ methodName: string, amountOfCoffeePowder: string, amountOfACupOfCoffee: string
-  , amountOfHotWater: string, temperatureOfHotWater:string, typeOfDripper: string
-  , isSuccess: boolean, message: string } {
+  data(): {
+    methodName: string,
+    typeOfCoffeePowder: string,
+    amountOfCoffeePowder: string,
+    amountOfACupOfCoffee: string,
+    amountOfHotWater: string,
+    temperatureOfHotWater: string,
+    typeOfDripper: string,
+    memo: string,
+    description: string,
+    time: number,
+    amount: number,
+    isSuccess: boolean,
+    message: string,
+    procedure: Procedure,
+    rows: { description: string, amount: number, time: number }[]
+  } {
     return {
       methodName: "",
+      typeOfCoffeePowder: "",
       amountOfCoffeePowder: "",
       amountOfACupOfCoffee: "",
       amountOfHotWater: "",
       temperatureOfHotWater: "",
       typeOfDripper: "",
+      memo: "",
+      description: "",
+      time: 0,
+      amount: 0,
       isSuccess: false,
       message: "",
+      procedure: new Procedure("", 0, 0),
+      rows: [
+        { description: "", amount: 0, time: 0 },
+      ],
     };
   },
   methods: {
     async register() {
+      const p: Procedure = new Procedure(
+        this.description,
+        this.time,
+        this.amount,
+      );
+      const procedure: Procedure[] = [];
+      procedure.push(p);
       const req = JSON.stringify({
         methodName: this.methodName,
+        typeOfCoffeePowder: this.typeOfCoffeePowder,
         amountOfCoffeePowder: this.amountOfCoffeePowder,
         amountOfACupOfCoffee: this.amountOfACupOfCoffee,
         amountOfHotWater: this.amountOfHotWater,
         temperatureOfHotWater: this.temperatureOfHotWater,
         typeOfDripper: this.typeOfDripper,
+        memo: this.memo,
+        procedure,
       });
 
       await this.axios
@@ -179,48 +296,45 @@ export default defineComponent({
           alert("通信中にエラーが発生しました。");
         });
     },
+    async update() {
+      const procedure: Procedure[] = [];
+      this.rows.forEach((row: { description: string, amount: number, time: number }) => {
+        const p: Procedure = new Procedure(
+          row.description,
+          row.time,
+          row.amount,
+        );
+
+        procedure.push(p);
+      });
+      const req = JSON.stringify({
+        methodName: this.methodName,
+        typeOfCoffeePowder: this.typeOfCoffeePowder,
+        amountOfCoffeePowder: this.amountOfCoffeePowder,
+        amountOfACupOfCoffee: this.amountOfACupOfCoffee,
+        amountOfHotWater: this.amountOfHotWater,
+        temperatureOfHotWater: this.temperatureOfHotWater,
+        typeOfDripper: this.typeOfDripper,
+        memo: this.memo,
+        procedure,
+      });
+
+      await this.axios
+        .post("http://127.0.0.1:5000/api/put_method", req)
+        .then((res: AxiosResponse<ApiResponse>) => {
+          alert(res.data.isSuccess ? res.data.message : "リクエストは失敗しました。");
+        })
+        .catch(() => {
+          this.isSuccess = false;
+          alert("通信中にエラーが発生しました。");
+        });
+    },
+    createRow() {
+      this.rows.push({ description: "", amount: 0, time: 0 });
+    },
   },
 
 });
-// export default {
-// name: "MethodRegister",
-// data: () => ({
-//   methodName: null,
-//   amountOfCoffeePowder: null,
-//   amountOfACupOfCoffee: null,
-//   amountOfHotWater: null,
-//   temperatureOfHotWater: null,
-//   typeOfDripper: null,
-//   isSuccess: false,
-//   message: null,
-// }),
-// methods: {
-//   async register() {
-//     const req = JSON.stringify({
-//       methodName: this.methodName,
-//       amountOfCoffeePowder: this.amountOfCoffeePowder,
-//       amountOfACupOfCoffee: this.amountOfACupOfCoffee,
-//       amountOfHotWater: this.amountOfHotWater,
-//       temperatureOfHotWater: this.temperatureOfHotWater,
-//       typeOfDripper: this.typeOfDripper,
-//     });
-
-//     await this.axios
-//       .post("http://127.0.0.1:5000/api/post_method", req)
-//       .then((res) => {
-//         if (res.data.isSuccess) {
-//           alert(res.data.message);
-//         } else {
-//           alert("リクエストは失敗しました。");
-//         }
-//       })
-//       .catch(() => {
-//         this.isSuccess = false;
-//         alert("通信中にエラーが発生しました。");
-//       });
-//   },
-// },
-// };
 </script>
 <style scoped>
 </style>

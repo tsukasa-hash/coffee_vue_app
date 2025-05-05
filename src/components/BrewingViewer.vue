@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <h1>タイマーでカウントダウンをする</h1>
+  <div
+    style="width: 780px"
+  >
+    <h1 style="border-top: 1px solid #ddd" />
     <br>
-    {{ method.getName() }}
+    {{ selectedMethod.methodName }}
     <br>
     {{ minutes }} : {{ seconds }}
     <br>
@@ -28,25 +30,18 @@
       リセット
     </button>
     <br>
-    {{ method.getProcedures() }}
-    <br>
-    <router-link to="/top">
-      メニューに戻る
-    </router-link>
-    <br>
-    <router-link to="/">
-      トップページに戻る
-    </router-link>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
 import TimerFSM from "./timer/TimerFSM";
 import Method from "./method/Method";
-import Procedure from "./method/Procedure";
 import { NormalTimerController } from "./timer/controller/TimerController";
 
 export default defineComponent({
+  props: {
+    selectedMethod: Method,
+  },
   data(): { timerFSM: TimerFSM | null, controller: NormalTimerController, method: Method | null
   , minutes: string, seconds: string, disabledStartButton: boolean, disabledStopButton: boolean
   , disabledResetButton: boolean } {
@@ -64,12 +59,10 @@ export default defineComponent({
   created() {
     // mountedではコンパイルに通らない
     // TODO：初期値を外部から取得する。timerは抽出手順配列から順番に取得する。
-    // const procedure = new Procedure("ドリッパーを温める", 30);
-    // const procedure = new Procedure("蒸らす", 60);
     this.method = new Method();
-    this.method.addProcedures(new Procedure("ドリッパーを温める", 30));
-    this.method.addProcedures(new Procedure("蒸らす", 60));
-    this.method.setName("画面で初期化したメソッド名");
+    // this.method.addProcedures(new Procedure("ドリッパーを温める", 30));
+    // this.method.addProcedures(new Procedure("蒸らす", 60));
+    // this.method.setName("画面で初期化したメソッド名");
     // this.timer = new Timer(0);
 
     // this.method.getProcedures().forEach((p: Procedure) => {
@@ -80,7 +73,7 @@ export default defineComponent({
   },
   mounted() {
     this.timerFSM = new TimerFSM(this.controller);
-    this.timerFSM.setInitialTime(30);
+    this.timerFSM.setInitialTime(10);
     // TODO：setInitialTimeをすると画面上の値も初期化するようにしたい
     this.timerFSM.initialize();
     this.minutes = this.timerFSM?.getMinutes() || "00";

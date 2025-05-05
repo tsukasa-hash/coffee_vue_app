@@ -17,7 +17,7 @@ export class BrewingContoller {
   }
 
   public brew():boolean {
-    const currentProcedure: Procedure[] = this.method.getProcedures();
+    const currentProcedure: Procedure[] = this.method.getProcedure();
     currentProcedure.forEach((procedure) => {
       this.timer.setInitialTime(procedure.getTime());
       this.timerContoller.execute(this.timer);

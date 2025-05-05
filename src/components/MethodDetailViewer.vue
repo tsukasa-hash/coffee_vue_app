@@ -1,55 +1,116 @@
 <template>
-  <div>
+  <div style="display: flex; flex-wrap: wrap">
     <h1 style="border-top: 1px solid #ddd" />
-    <div class="py-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group row">
-              <label
-                for="methodName"
-                class="col-2 col-form-label"
-              >メソッド名</label>
-              {{ selectedMethod.methodName }}
-            </div>
-            <div class="form-group row">
-              <label
-                for="amountOfCoffeePowder"
-                class="col-2 col-form-label"
-              >コーヒー粉の量</label>
+    <div style="width: 900px;min-height: 430px">
+      <h2 style="text-align: left">
+        メソッドの詳細
+      </h2>
+      <table>
+        <tbody>
+          <tr>
+            <td style="text-align: left">
+              コーヒーの粉
+            </td>
+            <td>
+              {{ selectedMethod.typeOfCoffeePowder }}
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left">
+              コーヒー粉の量
+            </td>
+            <td>
               {{ selectedMethod.amountOfCoffeePowder }}
-            </div>
-            <div class="form-group row">
-              <label
-                for="amountOfACupOfCoffee"
-                class="col-2 col-form-label"
-              >コーヒーの量</label>
+              g
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left">
+              コーヒーの量
+            </td>
+            <td>
               {{ selectedMethod.amountOfACupOfCoffee }}
-            </div>
-            <div class="form-group row">
-              <label
-                for="amountOfHotWater"
-                class="col-2 col-form-label"
-              >抽出に必要なお湯の量</label>
+              ml
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left">
+              抽出に必要なお湯の量
+            </td>
+            <td>
               {{ selectedMethod.amountOfHotWater }}
-            </div>
-            <div class="form-group row">
-              <label
-                for="temperatureOfHotWater"
-                class="col-2 col-form-label"
-              >お湯の温度</label>
+              ml
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left">
+              お湯の温度
+            </td>
+            <td>
               {{ selectedMethod.temperatureOfHotWater }}
-            </div>
-            <div class="form-group row">
-              <label
-                for="typeOfDripper"
-                class="col-2 col-form-label"
-              >ドリッパーの種類</label>
+              ℃
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left">
+              ドリッパーの種類
+            </td>
+            <td>
               {{ selectedMethod.typeOfDripper }}
-            </div>
-          </div>
-        </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left">
+              メモ
+            </td>
+            <td>
+              {{ selectedMethod.memo }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="width: 900px;min-height: 430px">
+      <div style="display: flex; flex-wrap: wrap">
+        <h2 style="text-align: left;padding-right: 10px">
+          手順
+        </h2>
+        <button
+          class="btn btn-dark"
+          style="width: 72px; height: 44px;"
+        >
+          DRIP
+        </button>
       </div>
+      <table>
+        <tbody
+          v-for="(step, index)
+            in
+              selectedMethod.procedure"
+          :key="index"
+        >
+          <tr>
+            <td style="text-align: left;rowspan:2">
+              {{ step.description }}
+            </td>
+            <td style="text-align: right">
+              {{ step.time }}秒
+            </td>
+            <td style="text-align: right">
+              {{ step.totaltime }}秒
+            </td>
+          </tr>
+          <tr>
+            <td />
+            <td style="text-align: right">
+              {{ step.amount }}ml
+            </td>
+            <td style="text-align: right">
+              {{ step.totalamount }}ml
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>

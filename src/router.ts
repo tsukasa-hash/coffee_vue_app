@@ -13,7 +13,7 @@ const routes = [
     component: HomeOfCoffee,
   },
   {
-    path: "/top",
+    path: "/top_old",
     name: "top",
     component: TopPage,
   },
@@ -28,8 +28,10 @@ const routes = [
     component: MethodDetailViewer,
   },
   {
-    path: "/method_list_viewer",
-    name: "method_list_viewer",
+    // path: "/method_list_viewer",
+    // name: "method_list_viewer",
+    path: "/top",
+    name: "top",
     component: MethodListViewer,
   },
   {

@@ -25,7 +25,7 @@ export class NormalTimerController implements TimerController {
       // 更新通知
       // TODO:observerパターンにしたい。このクラスはTimerを操作するだけで、誰かに通知することは想定していない。
       t.notifyUpdate?.();
-      if (remainingTime === 0) {
+      if (currentRemaining === 0) {
         this.suspend();
         alert("タイマーが終了しました。");
       }

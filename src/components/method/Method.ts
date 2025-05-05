@@ -1,11 +1,13 @@
 import Procedure from "./Procedure";
 
 export default class Method {
-  private procedures: Procedure[] = [];
+  private procedure: Procedure[] = [];
 
   private id: string = "";
 
   private methodName: string = "";
+
+  private typeOfCoffeePowder: string = "";
 
   private amountOfCoffeePowder: string = "";
 
@@ -18,6 +20,8 @@ export default class Method {
   private typeOfDripper: string = "";
 
   private methodIsSelected: boolean = false;
+
+  private memo: string = "";
 
   // constructor(
   //   id: string,
@@ -59,6 +63,14 @@ export default class Method {
 
   public getMethodName(): string {
     return this.methodName;
+  }
+
+  public settypeOfCoffeePowder(typeOfCoffeePowder: string): void {
+    this.typeOfCoffeePowder = typeOfCoffeePowder;
+  }
+
+  public getTypeOfCoffeePowder(): string {
+    return this.typeOfCoffeePowder;
   }
 
   public setAmountOfCoffeePowder(amountOfCoffeePowder: string): void {
@@ -109,11 +121,19 @@ export default class Method {
     return this.methodIsSelected;
   }
 
-  public addProcedures(procedure: Procedure) {
-    this.procedures.push(procedure);
+  public setMemo(memo: string): void {
+    this.memo = memo;
   }
 
-  public getProcedures(): Procedure[] {
-    return this.procedures;
+  public getMemo(): string {
+    return this.memo;
+  }
+
+  public addProcedure(procedure: Procedure) {
+    this.procedure.push(procedure);
+  }
+
+  public getProcedure(): Procedure[] {
+    return this.procedure;
   }
 }
