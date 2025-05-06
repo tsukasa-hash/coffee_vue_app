@@ -1,16 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeOfCoffee from "./views/HomeOfCoffee.vue";
+// import HomeOfCoffee from "./views/HomeOfCoffee.vue";
 import TopPage from "./components/TopPage.vue";
 import MethodRegister from "./components/MethodRegister.vue";
 import MethodDetailViewer from "./components/MethodDetailViewer.vue";
 import MethodListViewer from "./components/MethodListViewer.vue";
 import BrewingViewer from "./components/BrewingViewer.vue";
+import LoginPage from "./views/LoginPage.vue";
 
 const routes = [
+  // {
+  //   path: "/",
+  //   name: "HomeOfCoffee",
+  //   component: HomeOfCoffee,
+  // },
   {
     path: "/",
-    name: "HomeOfCoffee",
-    component: HomeOfCoffee,
+    name: "LoginPage",
+    component: LoginPage,
   },
   {
     path: "/top_old",
