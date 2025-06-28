@@ -6,6 +6,7 @@ import MethodDetailViewer from "./components/MethodDetailViewer.vue";
 import MethodListViewer from "./components/MethodListViewer.vue";
 import BrewingViewer from "./components/BrewingViewer.vue";
 import LoginPage from "./views/LoginPage.vue";
+import FirestoreTest from "./views/FirestoreTest.vue";
 
 const routes = [
   // {
@@ -44,6 +45,11 @@ const routes = [
     path: "/brewing",
     name: "brewing",
     component: BrewingViewer,
+  },
+  {
+    path: "/firestore_test",
+    name: "firestore_test",
+    component: FirestoreTest,
   },
 ];
 

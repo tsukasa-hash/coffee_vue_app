@@ -190,24 +190,33 @@
                         type="text"
                       >
                     </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-dark"
+                        @click="deleteRow(index)"
+                      >
+                        <span class="material-icons">
+                          delete
+                        </span>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                @click="register"
-              >
-                登録
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                @click="update"
-              >
-                更新
-              </button>
             </form>
+            <button
+              class="btn btn-primary"
+              @click="registerForFirestore"
+            >
+              登録
+            </button>
+            <button
+              class="btn btn-primary"
+              @click="update"
+            >
+              更新
+            </button>
           </div>
         </div>
       </div>
@@ -222,10 +231,14 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable import/no-cycle */
 import { defineComponent } from "vue";
-import { AxiosResponse } from "axios";
-import { ApiResponse } from "./response/ApiResponse";
+import {
+  addDoc, collection,
+} from "firebase/firestore";
+import { db } from "../firebase";
 import Procedure from "./method/Procedure";
+// NOTE:error  Dependency cycle via ./router:12  import/no-cycle
 
 export default defineComponent({
   data(): {
@@ -242,7 +255,7 @@ export default defineComponent({
     amount: number,
     isSuccess: boolean,
     message: string,
-    procedure: Procedure,
+    procedures: Procedure[],
     rows: { description: string, amount: number, time: number }[]
   } {
     return {
@@ -259,78 +272,40 @@ export default defineComponent({
       amount: 0,
       isSuccess: false,
       message: "",
-      procedure: new Procedure("", 0, 0),
+      procedures: [],
       rows: [
         { description: "", amount: 0, time: 0 },
       ],
     };
   },
   methods: {
-    async register() {
-      const p: Procedure = new Procedure(
-        this.description,
-        this.time,
-        this.amount,
-      );
-      const procedure: Procedure[] = [];
-      procedure.push(p);
-      const req = JSON.stringify({
-        methodName: this.methodName,
-        typeOfCoffeePowder: this.typeOfCoffeePowder,
-        amountOfCoffeePowder: this.amountOfCoffeePowder,
-        amountOfACupOfCoffee: this.amountOfACupOfCoffee,
-        amountOfHotWater: this.amountOfHotWater,
-        temperatureOfHotWater: this.temperatureOfHotWater,
-        typeOfDripper: this.typeOfDripper,
-        memo: this.memo,
-        procedure,
-      });
-
-      await this.axios
-        .post("http://127.0.0.1:5000/api/post_method", req)
-        .then((res: AxiosResponse<ApiResponse>) => {
-          alert(res.data.isSuccess ? res.data.message : "リクエストは失敗しました。");
-        })
-        .catch(() => {
-          this.isSuccess = false;
-          alert("通信中にエラーが発生しました。");
+    async registerForFirestore() {
+      try {
+        await addDoc(collection(db, "method"), {
+          methodName: this.methodName,
+          typeOfCoffeePowder: this.typeOfCoffeePowder,
+          amountOfCoffeePowder: this.amountOfCoffeePowder,
+          amountOfACupOfCoffee: this.amountOfACupOfCoffee,
+          amountOfHotWater: this.amountOfHotWater,
+          temperatureOfHotWater: this.temperatureOfHotWater,
+          typeOfDripper: this.typeOfDripper,
+          memo: this.memo,
+          procedure: this.rows.map((row) => ({
+            description: row.description,
+            time: row.time,
+            amount: row.amount,
+          })),
         });
-    },
-    async update() {
-      const procedure: Procedure[] = [];
-      this.rows.forEach((row: { description: string, amount: number, time: number }) => {
-        const p: Procedure = new Procedure(
-          row.description,
-          row.time,
-          row.amount,
-        );
-
-        procedure.push(p);
-      });
-      const req = JSON.stringify({
-        methodName: this.methodName,
-        typeOfCoffeePowder: this.typeOfCoffeePowder,
-        amountOfCoffeePowder: this.amountOfCoffeePowder,
-        amountOfACupOfCoffee: this.amountOfACupOfCoffee,
-        amountOfHotWater: this.amountOfHotWater,
-        temperatureOfHotWater: this.temperatureOfHotWater,
-        typeOfDripper: this.typeOfDripper,
-        memo: this.memo,
-        procedure,
-      });
-
-      await this.axios
-        .post("http://127.0.0.1:5000/api/put_method", req)
-        .then((res: AxiosResponse<ApiResponse>) => {
-          alert(res.data.isSuccess ? res.data.message : "リクエストは失敗しました。");
-        })
-        .catch(() => {
-          this.isSuccess = false;
-          alert("通信中にエラーが発生しました。");
-        });
+        console.log("{$doc.id} added successfully!");
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
     },
     createRow() {
       this.rows.push({ description: "", amount: 0, time: 0 });
+    },
+    deleteRow(index: number) {
+      this.rows.splice(index, 1);
     },
   },
 

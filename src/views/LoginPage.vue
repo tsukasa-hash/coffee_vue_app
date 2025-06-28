@@ -57,11 +57,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import {
-  getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, AuthErrorCodes,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, AuthErrorCodes,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
+import { auth } from "../firebase";
+// import { auth } from "../main";
 
-const auth = getAuth();
+// const auth = getAuth();
 export default defineComponent({
   data(): {
     email: string;

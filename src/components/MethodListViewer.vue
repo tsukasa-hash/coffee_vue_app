@@ -15,6 +15,9 @@
     <router-link to="/">
       トップページに戻る
     </router-link>
+    <!-- <router-link to="/firestore_test">
+      Firestoreのテスト
+    </router-link> -->
     <div class="bl_flexContainer">
       <div
         v-for="method in methods"
@@ -36,6 +39,14 @@
               class="radio-inline__label"
               :for="method.id"
             >
+              <button
+                type="button"
+                @click="deleteMethod(method.id)"
+              >
+                <span class="material-icons">
+                  delete_outline
+                </span>
+              </button>
               <div class="card__header_02">
                 <p class="card__title_02">
                   {{ method.methodName }}
@@ -93,19 +104,26 @@
       <MethodDetailViewer
         :selected-method="selectedMethod"
       />
+      <UserConfirmDialog />
     </div>
     <br>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import {
+  collection, deleteDoc, doc, getDocs,
+} from "firebase/firestore";
 import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
+import { db } from "../firebase";
+import UserConfirmDialog from "./dialog/UserConfirmDialog.vue";
 // import BrewingViewerVue from "./BrewingViewer.vue";
 
 export default defineComponent({
   components: {
     MethodDetailViewer,
+    UserConfirmDialog,
     // BrewingViewerVue,
   },
   data(): { methods: Method[] | null
@@ -131,7 +149,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.getMethods().catch(console.error);
+    this.getMethodsFromFirestore().catch(console.error);
   },
   methods: {
     async getMethods() {
@@ -148,6 +166,26 @@ export default defineComponent({
         .catch(() => {
           alert("通信中にエラーが発生しました。");
         });
+    },
+    // TODO: Procedureを取得できるようにする
+    // TODO: firestoreの処理を1つにまとめる
+    async getMethodsFromFirestore() {
+      const querySnapshot = await getDocs(collection(db, "method"));
+      this.methods = querySnapshot.docs.map((document) => {
+        let m = new Method();
+        m = Object.assign(m, document.data());
+        m.setId(document.id);
+        console.log(document.id);
+
+        return m;
+      });
+    },
+    async deleteMethod(methodId: string) {
+      try {
+        await deleteDoc(doc(db, "method", methodId));
+      } catch (error) {
+        console.error("Error deleting method:", error);
+      }
     },
   },
 });
