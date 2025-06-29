@@ -1,10 +1,8 @@
 <template>
   <div
-    style="width: 780px"
+    style="width: 300px"
   >
-    <h1 style="border-top: 1px solid #ddd" />
-    <br>
-    {{ selectedMethod.methodName }}
+    <p>{{ time }}</p>
     <br>
     {{ minutes }} : {{ seconds }}
     <br>
@@ -41,6 +39,10 @@ import { NormalTimerController } from "./timer/controller/TimerController";
 export default defineComponent({
   props: {
     selectedMethod: Method,
+    time: {
+      type: Number,
+      default: 0,
+    },
   },
   data(): { timerFSM: TimerFSM | null, controller: NormalTimerController, method: Method | null
   , minutes: string, seconds: string, disabledStartButton: boolean, disabledStopButton: boolean
@@ -56,6 +58,25 @@ export default defineComponent({
       disabledResetButton: true,
     };
   },
+  watch: {
+    time: {
+      handler(newVal: number) {
+        if (this.timerFSM) {
+          console.log(`Time changed to: ${newVal}`);
+          // FIXME:カプセル化でタイマーの扱いをFSM？で1本化したい。
+          this.timerFSM.setInitialTime(newVal);
+          this.timerFSM.initialize(); // タイマーを初期化
+          console.log(`TimerFSM initial time set to: ${this.timerFSM.getInitialTime()}`);
+
+          // 画面上の時間も更新
+          this.minutes = this.timerFSM.getMinutes();
+          this.seconds = this.timerFSM.getSeconds();
+        }
+      },
+      immediate: true,
+    },
+  },
+
   created() {
     // mountedではコンパイルに通らない
     // TODO：初期値を外部から取得する。timerは抽出手順配列から順番に取得する。
@@ -73,8 +94,8 @@ export default defineComponent({
   },
   mounted() {
     this.timerFSM = new TimerFSM(this.controller);
-    this.timerFSM.setInitialTime(10);
-    // TODO：setInitialTimeをすると画面上の値も初期化するようにしたい
+    this.timerFSM.setInitialTime(this.time); // 初期時間を設定
+    // TODO:setInitialTimeをすると画面上の値も初期化するようにしたい
     this.timerFSM.initialize();
     this.minutes = this.timerFSM?.getMinutes() || "00";
     this.seconds = this.timerFSM?.getSeconds() || "00";

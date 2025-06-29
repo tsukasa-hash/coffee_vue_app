@@ -6,6 +6,9 @@
 
     <router-link to="/method_register">
       <!-- 抽出を登録する -->
+      <span class="material-icons">
+        coffee
+      </span>
       <img
         src="../assets/Icon Button.svg"
         alt="登録アイコン"
@@ -104,7 +107,7 @@
       <MethodDetailViewer
         :selected-method="selectedMethod"
       />
-      <UserConfirmDialog />
+      <!-- <UserConfirmDialog /> -->
     </div>
     <br>
   </div>
@@ -117,13 +120,13 @@ import {
 import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
 import { db } from "../firebase";
-import UserConfirmDialog from "./dialog/UserConfirmDialog.vue";
+// import UserConfirmDialog from "./dialog/UserConfirmDialog.vue";
 // import BrewingViewerVue from "./BrewingViewer.vue";
 
 export default defineComponent({
   components: {
     MethodDetailViewer,
-    UserConfirmDialog,
+    // UserConfirmDialog,
     // BrewingViewerVue,
   },
   data(): { methods: Method[] | null
@@ -175,11 +178,12 @@ export default defineComponent({
         let m = new Method();
         m = Object.assign(m, document.data());
         m.setId(document.id);
-        console.log(document.id);
 
         return m;
       });
     },
+    // TODO: 削除の確認ダイアログを表示する
+    // TODO:削除したときに画面で見えないようにする
     async deleteMethod(methodId: string) {
       try {
         await deleteDoc(doc(db, "method", methodId));

@@ -75,14 +75,37 @@
         <h2 style="text-align: left;padding-right: 10px">
           手順
         </h2>
-        <button
+        <BrewingViewer :time="initialTime" />
+        <!-- <button
           class="btn btn-dark"
-          style="width: 72px; height: 44px;"
+          style="width: 100px; height: 44px;"
         >
+          <span class="material-icons">
+            coffee_maker
+          </span>
           DRIP
-        </button>
+        </button> -->
+        <router-link to="/brewing">
+          <button
+            class="btn btn-dark"
+            style="width: 100px; height: 44px;"
+          >
+            <span class="material-icons">
+              coffee_maker
+            </span>
+            DRIP
+          </button>
+        </router-link>
       </div>
       <table>
+        <thead>
+          <tr>
+            <th>詳細</th>
+            <th />
+            <th>合計</th>
+            <th />
+          </tr>
+        </thead>
         <tbody
           v-for="(step, index)
             in
@@ -97,7 +120,7 @@
               {{ step.time }}秒
             </td>
             <td style="text-align: right">
-              {{ step.totaltime }}秒
+              {{ step.totalTime }}秒
             </td>
           </tr>
           <tr>
@@ -106,22 +129,56 @@
               {{ step.amount }}ml
             </td>
             <td style="text-align: right">
-              {{ step.totalamount }}ml
+              {{ step.totalAmount }}ml
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <p>
+      <!-- {{ selectedMethod.procedure[0] }} -->
+      selectedMethod.procedure[0]:
+      {{ selectedMethod.procedure[0]?.time }}
+      initialTime:
+      {{ initialTime }}
+    </p>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
 import Method from "./method/Method";
+import BrewingViewer from "./BrewingViewer.vue";
+import Procedure from "./method/Procedure";
 
 export default defineComponent({
   name: "MethodDetailViewer",
+  components: { BrewingViewer },
   props: {
     selectedMethod: Method,
+  },
+  data(): {
+    initialTime: number,
+    method: Method | undefined,
+  } {
+    return {
+      initialTime: 0,
+      method: new Method(),
+    };
+  },
+  watch: {
+    selectedMethod() {
+      this.method = this.selectedMethod ? this.selectedMethod : new Method();
+      // FIXME:処理をきれいにしたい。initilaTimeの変数が必要なのか。
+      // TODO:タイマーが終わったら次の手順に進みタイマーを実行する。
+      const rawProcedure = this.method.getProcedure();
+      const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
+      const step1: Procedure = procedure[0];
+      const time: number = Number(step1.getTime());
+      this.initialTime = time;
+    },
+  },
+  mounted() {
+    this.method = this.selectedMethod;
   },
 });
 </script>

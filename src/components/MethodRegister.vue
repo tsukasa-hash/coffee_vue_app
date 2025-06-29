@@ -167,6 +167,16 @@
                 </button>
               </div>
               <table>
+                <thead>
+                  <tr>
+                    <th>詳細</th>
+                    <th>お湯の量</th>
+                    <th>合計量</th>
+                    <th>時間</th>
+                    <th>合計時間</th>
+                    <th />
+                  </tr>
+                </thead>
                 <tbody>
                   <tr
                     v-for="(row, index) in rows"
@@ -186,7 +196,19 @@
                     </td>
                     <td>
                       <input
+                        v-model="row.totalAmount"
+                        type="text"
+                      >
+                    </td>
+                    <td>
+                      <input
                         v-model="row.time"
+                        type="text"
+                      >
+                    </td>
+                    <td>
+                      <input
+                        v-model="row.totalTime"
                         type="text"
                       >
                     </td>
@@ -256,7 +278,11 @@ export default defineComponent({
     isSuccess: boolean,
     message: string,
     procedures: Procedure[],
-    rows: { description: string, amount: number, time: number }[]
+    rows: { description: string
+    , amount: number
+    , totalAmount: number
+    , time: number
+    , totalTime: number }[]
   } {
     return {
       methodName: "",
@@ -274,11 +300,17 @@ export default defineComponent({
       message: "",
       procedures: [],
       rows: [
-        { description: "", amount: 0, time: 0 },
+        {
+          description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
+        },
       ],
     };
   },
+  // TODO:合計を自動で計算する
+  // TODO:詳細をプルダウンで選択できるようにする
   methods: {
+    // TODO:登録の確認ダイアログを表示する
+    // TODO:登録が完了すると画面をクリアするか、確認画面を表示する
     async registerForFirestore() {
       try {
         await addDoc(collection(db, "method"), {
@@ -292,8 +324,10 @@ export default defineComponent({
           memo: this.memo,
           procedure: this.rows.map((row) => ({
             description: row.description,
-            time: row.time,
             amount: row.amount,
+            totalAmount: row.totalAmount,
+            time: row.time,
+            totalTime: row.totalTime,
           })),
         });
         console.log("{$doc.id} added successfully!");
@@ -302,7 +336,9 @@ export default defineComponent({
       }
     },
     createRow() {
-      this.rows.push({ description: "", amount: 0, time: 0 });
+      this.rows.push({
+        description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
+      });
     },
     deleteRow(index: number) {
       this.rows.splice(index, 1);
