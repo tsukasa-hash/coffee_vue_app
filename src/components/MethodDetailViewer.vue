@@ -118,7 +118,16 @@
             :key="index"
           >
             <tr>
-              <td :style="{ background: gradientStyle, textAlign: 'left', rowSpan: '2' }">
+              <td
+                v-if="index === currentStep"
+                :style="{ background: gradientStyle, textAlign: 'left', rowSpan: '2' }"
+              >
+                {{ step.description }}
+              </td>
+              <td
+                v-else
+                :style="{textAlign: 'left', rowSpan: '2' }"
+              >
                 {{ step.description }}
               </td>
               <td style="text-align: right">
@@ -165,16 +174,20 @@ export default defineComponent({
     method: Method | undefined,
     elapsedTime: number,
     intervalId: number | null,
+    currentStep: number,
+    numberOfTotalSteps: number,
   } {
     return {
       initialTime: 0,
       method: new Method(),
       elapsedTime: 0,
       intervalId: null as number | null,
+      currentStep: 0,
+      numberOfTotalSteps: 0,
     };
   },
   computed: {
-    // タイマーに応じて該当の手順だけ色を変える。
+    // TODO:タイマーに応じて該当の手順だけ色を変える。
     gradientStyle(): string {
       const percent = Math.min(100, (this.elapsedTime / this.initialTime) * 100);
       // 進捗に応じて色を変える
@@ -194,6 +207,7 @@ export default defineComponent({
       const step1: Procedure = procedure[0];
       const time: number = Number(step1.getTime());
       this.initialTime = time;
+      this.numberOfTotalSteps = procedure.length;
     },
   },
   mounted() {
@@ -210,13 +224,28 @@ export default defineComponent({
         }
       }, 100); // 0.1秒ごと
     },
-    // タイマーが終わったら次の手順に進みタイマーを実行する。
+    // タイマーが終わったら次の手順に進み、タイマーを実行する。
     async onTimerFinished() {
+      // 手順1は初期描画時に渡すため、タイマー終了時に最初に渡す値は1（手順2）となる。
+      this.currentStep += 1;
+      if (this.currentStep >= this.numberOfTotalSteps) {
+        // 全ての手順が完了したとき、初期化し、終了する。
+        this.currentStep = 0;
+        this.elapsedTime = 0;
+        // FIXME:methodを取り出す処理をまとめたい。
+        this.method = this.selectedMethod ? this.selectedMethod : new Method();
+        const rawProcedure = this.method.getProcedure();
+        const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
+        const step1: Procedure = procedure[0];
+        const time: number = Number(step1.getTime());
+        this.initialTime = time;
+        return;
+      }
       this.method = this.selectedMethod ? this.selectedMethod : new Method();
       const rawProcedure = this.method.getProcedure();
       const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
 
-      const nextStep: Procedure = procedure[1];
+      const nextStep: Procedure = procedure[this.currentStep];
       const time: number = Number(nextStep.getTime());
       this.initialTime = time;
 
