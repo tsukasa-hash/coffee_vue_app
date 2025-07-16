@@ -12,8 +12,10 @@ export class NormalTimerController implements TimerController {
 
   execute(t: Timer): void {
     t.setRunning();
+    this.initialize(t);
     const startTime = Date.now();
     const remainingTime = t.getRemainingTime();
+
     this.tick = setInterval(() => {
       const elapsed = NormalTimerController.durationFromStart(startTime);
       const currentRemaining = remainingTime - elapsed;
@@ -27,8 +29,10 @@ export class NormalTimerController implements TimerController {
       t.notifyUpdate?.();
       if (currentRemaining === 0) {
         this.suspend();
-        alert("タイマーが終了しました。");
+        t.setStopping();
+        t.complete();
       }
+      // console.log(currentRemaining);
     }, 1000);
   }
 

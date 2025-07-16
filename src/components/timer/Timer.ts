@@ -24,6 +24,8 @@ export default abstract class Timer extends TimerActions {
 
   private onUpdateCallback: (() => void) | null = null;
 
+  private onCompleteCallback: (() => void) | null = null;
+
   constructor(seconds: number) {
     super();
     Timer.stopping = new Stopping();
@@ -111,6 +113,16 @@ export default abstract class Timer extends TimerActions {
   public notifyUpdate(): void {
     if (this.onUpdateCallback) {
       this.onUpdateCallback();
+    }
+  }
+
+  setOnComplete(callback: () => void): void {
+    this.onCompleteCallback = callback;
+  }
+
+  public complete(): void {
+    if (this.onCompleteCallback) {
+      this.onCompleteCallback();
     }
   }
 }
