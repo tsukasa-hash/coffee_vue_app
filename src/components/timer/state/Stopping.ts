@@ -10,8 +10,8 @@ export class Stopping implements TimerState {
     t.execute();
   }
 
-  public stop(_t: Timer) {
-    // 何もしない
+  public stop(t: Timer) {
+    // 各手順のタイマーが終了したときに呼ばれるが何もしない
   }
 
   public reset(_t: Timer) {

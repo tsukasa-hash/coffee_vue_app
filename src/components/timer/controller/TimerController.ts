@@ -29,7 +29,8 @@ export class NormalTimerController implements TimerController {
       // TODO:observerパターンにしたい。このクラスはTimerを操作するだけで、誰かに通知することは想定していない。
       t.notifyUpdate?.();
       if (currentRemaining === 0) {
-        this.suspend();
+        // DONE:タイマーが0になったとき、画面を初期値（ボタンの活性）に戻す
+        clearInterval(this.tick);
         t.setStopping();
         t.complete();
       }

@@ -98,6 +98,11 @@ export default defineComponent({
     // 終了時に親コンポーネントへ通知
     this.timerFSM.setOnComplete(() => {
       this.$emit("finished");
+      // FIXME:stopにはもう一つの状態があるのかもしれない。一時停止中と完全停止。これを整理する。
+      this.timerFSM?.stop();
+      this.disabledStartButton = false;
+      this.disabledStopButton = true;
+      this.disabledResetButton = true;
     });
   },
   methods: {
