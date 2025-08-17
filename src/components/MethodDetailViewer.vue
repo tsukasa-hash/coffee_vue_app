@@ -79,6 +79,7 @@
           ref="brewingViewer"
           :time="initialTime"
           @finished="onTimerFinished"
+          @processing="onTimerProcessing"
         />
         <!-- <button
           class="btn btn-dark"
@@ -149,9 +150,6 @@
           </tbody>
         </table>
       </div>
-      <button @click="startProgress">
-        クリック
-      </button>
       {{ elapsedTime }} / {{ initialTime }}
     </div>
   </div>
@@ -187,9 +185,12 @@ export default defineComponent({
     };
   },
   computed: {
-    // TODO:タイマーに応じて該当の手順だけ色を変える。
+    // DONE:タイマーに応じて該当の手順だけ色を変える。
+    // TODO:ミリ秒単位で変化を滑らかにする
     gradientStyle(): string {
-      const percent = Math.min(100, (this.elapsedTime / this.initialTime) * 100);
+      // elapsedTimeはタイマーの経過時間なので、初期時間からの経過時間を引いて、進捗を計算する。
+      const percent = Math.min(100, ((this.initialTime - this.elapsedTime) / this.initialTime)
+      * 100);
       // 進捗に応じて色を変える
       return `linear-gradient(to right,
       #ff0000 0%, 
@@ -201,29 +202,21 @@ export default defineComponent({
   watch: {
     selectedMethod() {
       this.method = this.selectedMethod ? this.selectedMethod : new Method();
-      // TODO:タイマーのスタートと同時に、プログレスバーをスタートさせる。
       const rawProcedure = this.method.getProcedure();
       const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
       const step1: Procedure = procedure[0];
       const time: number = Number(step1.getTime());
       this.initialTime = time;
       this.numberOfTotalSteps = procedure.length;
+      // console.log(`手順の数: ${this.numberOfTotalSteps}`);
     },
   },
   mounted() {
     this.method = this.selectedMethod;
   },
   methods: {
-    startProgress() {
-      this.elapsedTime = 0;
-      this.intervalId = setInterval(() => {
-        if (this.elapsedTime < this.initialTime) {
-          this.elapsedTime += 0.1;
-        } else {
-          clearInterval(this.intervalId!);
-        }
-      }, 100); // 0.1秒ごと
-    },
+    // タイマーのスタートと同時に、プログレスバーをスタートする。
+    // DONE:タイマーの時刻と同期させる。
     // タイマーが終わったら次の手順に進み、タイマーを実行する。
     async onTimerFinished() {
       // 手順1は初期描画時に渡すため、タイマー終了時に最初に渡す値は1（手順2）となる。
@@ -255,6 +248,9 @@ export default defineComponent({
 
       const brewingViewer = this.$refs.brewingViewer as { startTimer: () => void };
       brewingViewer.startTimer();
+    },
+    onTimerProcessing(elapsedTime: number) {
+      this.elapsedTime = elapsedTime;
     },
   },
 });

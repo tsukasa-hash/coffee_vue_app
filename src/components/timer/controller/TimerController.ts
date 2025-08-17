@@ -32,7 +32,6 @@ export class NormalTimerController implements TimerController {
         t.setStopping();
         t.complete();
       }
-      // console.log(currentRemaining);
     }, 1000);
   }
 

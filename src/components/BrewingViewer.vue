@@ -43,14 +43,15 @@ export default defineComponent({
     },
   },
   // タイマーのカウントダウンが終了したことを親コンポーネントに伝える
-  emits: ["finished"],
+  emits: ["finished", "processing"],
   data(): { timerFSM: TimerFSM | null, controller: NormalTimerController, method: Method | null
-  , minutes: string, seconds: string, disabledStartButton: boolean, disabledStopButton: boolean
-  , disabledResetButton: boolean } {
+  , elapsedTime: number, minutes: string, seconds: string, disabledStartButton: boolean
+  , disabledStopButton: boolean, disabledResetButton: boolean } {
     return {
       timerFSM: null,
       controller: new NormalTimerController(),
       method: null,
+      elapsedTime: 0,
       minutes: "",
       seconds: "",
       disabledStartButton: false,
@@ -90,15 +91,16 @@ export default defineComponent({
     this.timerFSM.setUpdateCallback(() => {
       this.minutes = this.timerFSM?.getMinutes() || "00";
       this.seconds = this.timerFSM?.getSeconds() || "00";
+      this.elapsedTime = this.timerFSM?.getRemainingTime() || 0;
+      this.$emit("processing", this.elapsedTime);
     });
 
-    // 終了時に親へ通知
+    // 終了時に親コンポーネントへ通知
     this.timerFSM.setOnComplete(() => {
       this.$emit("finished");
     });
   },
   methods: {
-    // TODO:0秒になったら次のタイマーを実行する
     startTimer() {
       this.timerFSM?.start(); // null チェックして安全に呼び出し
       // TODO:Timerの状態によって活性制御する。
