@@ -21,4 +21,8 @@ export default class TimerFSM extends Timer {
   initialize(): void {
     this.controller.initialize(this);
   }
+
+  restart(): void {
+    this.controller.restart(this);
+  }
 }

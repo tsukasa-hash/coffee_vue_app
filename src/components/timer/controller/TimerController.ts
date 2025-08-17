@@ -5,6 +5,7 @@ export interface TimerController {
   execute(t: Timer): void;
   suspend(): void;
   initialize(t: Timer): void;
+  restart(t: Timer): void;
 }
 
 export class NormalTimerController implements TimerController {
@@ -61,5 +62,27 @@ export class NormalTimerController implements TimerController {
     t.setMinutes(NormalTimerController.convertIntoMm(t.getInitialTime()));
     t.setSeconds(NormalTimerController.convertIntoSs(t.getInitialTime()));
     t.notifyUpdate?.();
+  }
+
+  restart(t: Timer): void {
+    t.setRunning();
+    const startTime = Date.now();
+    const remainingTime = t.getRemainingTime();
+    this.tick = setInterval(() => {
+      const elapsed = NormalTimerController.durationFromStart(startTime);
+      const currentRemaining = remainingTime - elapsed;
+
+      t.setRemainingTime(currentRemaining);
+      t.setMinutes(NormalTimerController.convertIntoMm(currentRemaining));
+      t.setSeconds(NormalTimerController.convertIntoSs(currentRemaining));
+
+      // 更新通知
+      t.notifyUpdate?.();
+      if (currentRemaining === 0) {
+        this.suspend();
+        t.setStopping();
+        t.complete();
+      }
+    }, 1000);
   }
 }

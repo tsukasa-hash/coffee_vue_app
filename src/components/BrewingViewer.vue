@@ -102,7 +102,7 @@ export default defineComponent({
   },
   methods: {
     startTimer() {
-      // TODO:ストップを押した後にスタートを押すと、中断したところから再開したい
+      // DONE:ストップを押した後にスタートを押すと、中断したところから再開したい
       this.timerFSM?.start(); // null チェックして安全に呼び出し
       // TODO:Timerの状態によって活性制御する。
       this.disabledStartButton = true;

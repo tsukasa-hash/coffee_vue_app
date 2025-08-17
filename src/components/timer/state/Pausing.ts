@@ -6,7 +6,7 @@ import { TimerState } from "./TimerState";
 export class Pausing implements TimerState {
   public start(t: Timer) {
     t.setRunning();
-    t.execute();
+    t.restart();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
