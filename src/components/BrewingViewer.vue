@@ -43,7 +43,7 @@ export default defineComponent({
     },
   },
   // タイマーのカウントダウンが終了したことを親コンポーネントに伝える
-  emits: ["finished", "processing"],
+  emits: ["finished", "processing", "reset"],
   data(): { timerFSM: TimerFSM | null, controller: NormalTimerController, method: Method | null
   , elapsedTime: number, minutes: string, seconds: string, disabledStartButton: boolean
   , disabledStopButton: boolean, disabledResetButton: boolean } {
@@ -102,6 +102,7 @@ export default defineComponent({
   },
   methods: {
     startTimer() {
+      // TODO:ストップを押した後にスタートを押すと、中断したところから再開したい
       this.timerFSM?.start(); // null チェックして安全に呼び出し
       // TODO:Timerの状態によって活性制御する。
       this.disabledStartButton = true;
@@ -115,7 +116,10 @@ export default defineComponent({
       this.disabledResetButton = false;
     },
     resetTimer() {
+      // DONE:リセットを押すと、最初の手順に戻る
       this.timerFSM?.reset();
+      this.$emit("reset");
+
       this.disabledStartButton = false;
       this.disabledStopButton = true;
       this.disabledResetButton = true;

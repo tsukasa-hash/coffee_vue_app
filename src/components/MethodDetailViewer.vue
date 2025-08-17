@@ -80,6 +80,7 @@
           :time="initialTime"
           @finished="onTimerFinished"
           @processing="onTimerProcessing"
+          @reset="onResetTimer"
         />
         <!-- <button
           class="btn btn-dark"
@@ -251,6 +252,17 @@ export default defineComponent({
     },
     onTimerProcessing(elapsedTime: number) {
       this.elapsedTime = elapsedTime;
+    },
+    onResetTimer() {
+      // FIXME:onTimerFinishedの最後の手順のときと処理と同じなので処理をまとめたい。
+      this.currentStep = 0;
+      this.elapsedTime = 0;
+      this.method = this.selectedMethod ? this.selectedMethod : new Method();
+      const rawProcedure = this.method.getProcedure();
+      const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
+      const step1: Procedure = procedure[0];
+      const time: number = Number(step1.getTime());
+      this.initialTime = time;
     },
   },
 });
