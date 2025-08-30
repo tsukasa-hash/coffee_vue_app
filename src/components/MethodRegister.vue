@@ -260,6 +260,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import Procedure from "./method/Procedure";
+import showDialogWithEachMethod from "./dialog/DialogService";
 // NOTE:error  Dependency cycle via ./router:12  import/no-cycle
 
 export default defineComponent({
@@ -309,31 +310,45 @@ export default defineComponent({
   // TODO:合計を自動で計算する
   // TODO:詳細をプルダウンで選択できるようにする
   methods: {
-    // TODO:登録の確認ダイアログを表示する
-    // TODO:登録が完了すると画面をクリアするか、確認画面を表示する
+    // DONE:登録の確認ダイアログを表示する
     async registerForFirestore() {
       try {
-        await addDoc(collection(db, "method"), {
-          methodName: this.methodName,
-          typeOfCoffeePowder: this.typeOfCoffeePowder,
-          amountOfCoffeePowder: this.amountOfCoffeePowder,
-          amountOfACupOfCoffee: this.amountOfACupOfCoffee,
-          amountOfHotWater: this.amountOfHotWater,
-          temperatureOfHotWater: this.temperatureOfHotWater,
-          typeOfDripper: this.typeOfDripper,
-          memo: this.memo,
-          procedure: this.rows.map((row) => ({
-            description: row.description,
-            amount: row.amount,
-            totalAmount: row.totalAmount,
-            time: row.time,
-            totalTime: row.totalTime,
-          })),
-        });
-        console.log("{$doc.id} added successfully!");
+        await showDialogWithEachMethod(
+          "メソッドを登録しますか？",
+          {
+            onLeftClick: async () => {
+              try {
+                await this.registerMethod();
+                await this.$router.push("/top");
+              } catch (error) {
+                console.error("Error adding document: ", error);
+              }
+            },
+            onRightClick: async () => { },
+          },
+        );
       } catch (error) {
         console.error("Error adding document: ", error);
       }
+    },
+    async registerMethod() {
+      await addDoc(collection(db, "method"), {
+        methodName: this.methodName,
+        typeOfCoffeePowder: this.typeOfCoffeePowder,
+        amountOfCoffeePowder: this.amountOfCoffeePowder,
+        amountOfACupOfCoffee: this.amountOfACupOfCoffee,
+        amountOfHotWater: this.amountOfHotWater,
+        temperatureOfHotWater: this.temperatureOfHotWater,
+        typeOfDripper: this.typeOfDripper,
+        memo: this.memo,
+        procedure: this.rows.map((row) => ({
+          description: row.description,
+          amount: row.amount,
+          totalAmount: row.totalAmount,
+          time: row.time,
+          totalTime: row.totalTime,
+        })),
+      });
     },
     createRow() {
       this.rows.push({
