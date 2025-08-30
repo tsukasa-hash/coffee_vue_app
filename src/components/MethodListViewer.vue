@@ -120,7 +120,7 @@ import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
 import { db } from "../firebase";
 // import BrewingViewerVue from "./BrewingViewer.vue";
-import showTwoButtonDialogWithEachMethod from "./dialog/DialogService";
+import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
 
 export default defineComponent({
   components: {

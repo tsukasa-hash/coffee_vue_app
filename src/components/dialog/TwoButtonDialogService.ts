@@ -23,7 +23,7 @@ function showTwoButtonDialog(options: {
   });
 }
 // NOTE:メソッドの順序はこのとおりでなければならない。showDialogが先でなければ処理内容を読み込めない。
-export default async function showTwoButtonDialogWithEachMethod(
+export default async function showDialog(
   message: string,
   handlers: {
     // 同期・非同期どちらも対応している。

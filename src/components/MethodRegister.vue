@@ -260,7 +260,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import Procedure from "./method/Procedure";
-import showTwoButtonDialogWithEachMethod from "./dialog/DialogService";
+import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
 // NOTE:error  Dependency cycle via ./router:12  import/no-cycle
 
 export default defineComponent({
