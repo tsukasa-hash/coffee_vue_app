@@ -107,9 +107,6 @@
       <MethodDetailViewer
         :selected-method="selectedMethod"
       />
-      <button @click="showTwoButtonDialog">
-        TwoButtonDialogを表示
-      </button>
     </div>
     <br>
   </div>
@@ -201,17 +198,6 @@ export default defineComponent({
       } catch (error) {
         console.error("Error deleting method:", error);
       }
-    },
-    async showTwoButtonDialog() {
-      await showDialogWithEachMethod(
-        "保存しますか？",
-        {
-          onLeftClick: () => { alert("左ボタンが押されました"); },
-          onRightClick: () => { alert("右ボタンが押されました"); },
-        },
-        "はい",
-        "いいえ",
-      );
     },
   },
 });
