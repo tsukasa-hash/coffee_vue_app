@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import Dialog from "./TwoButtonDialog.vue";
 // NOTE:このプログラムはチャットGPTによって作られたので、仕組みはわからない。
-function showDialog(options: {
+function showTwoButtonDialog(options: {
   message: string;
   leftButtonLabel?: string;
   rightButtonLabel?: string;
@@ -23,7 +23,7 @@ function showDialog(options: {
   });
 }
 // NOTE:メソッドの順序はこのとおりでなければならない。showDialogが先でなければ処理内容を読み込めない。
-export default async function showDialogWithEachMethod(
+export default async function showTwoButtonDialogWithEachMethod(
   message: string,
   handlers: {
     // 同期・非同期どちらも対応している。
@@ -33,7 +33,7 @@ export default async function showDialogWithEachMethod(
   leftButtonLabel?: string,
   rightButtonLabel?: string,
 ) {
-  const result = await showDialog({ message, leftButtonLabel, rightButtonLabel });
+  const result = await showTwoButtonDialog({ message, leftButtonLabel, rightButtonLabel });
   switch (result) {
     case "left":
       await handlers.onLeftClick?.();

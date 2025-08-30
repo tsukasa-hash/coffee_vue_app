@@ -120,7 +120,7 @@ import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
 import { db } from "../firebase";
 // import BrewingViewerVue from "./BrewingViewer.vue";
-import showDialogWithEachMethod from "./dialog/DialogService";
+import showTwoButtonDialogWithEachMethod from "./dialog/DialogService";
 
 export default defineComponent({
   components: {
@@ -182,7 +182,7 @@ export default defineComponent({
     // DONE: 削除の確認ダイアログを表示する
     async deleteMethod(methodId: string) {
       try {
-        await showDialogWithEachMethod(
+        await showTwoButtonDialogWithEachMethod(
           "本当に削除しますか？",
           {
             onLeftClick: async () => {
