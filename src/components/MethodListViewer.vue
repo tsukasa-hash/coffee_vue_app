@@ -182,11 +182,22 @@ export default defineComponent({
         return m;
       });
     },
-    // TODO: 削除の確認ダイアログを表示する
-    // TODO:削除したときに画面で見えないようにする
+    // DONE: 削除の確認ダイアログを表示する
     async deleteMethod(methodId: string) {
       try {
-        await deleteDoc(doc(db, "method", methodId));
+        await showDialogWithEachMethod(
+          "本当に削除しますか？",
+          {
+            onLeftClick: async () => {
+              await deleteDoc(doc(db, "method", methodId));
+              // DONE: 削除したときにメソッドを取得し直し、削除したメソッドを画面で見えないようにする
+              this.getMethodsFromFirestore().catch(console.error);
+            },
+            onRightClick: async () => { },
+          },
+          "はい",
+          "いいえ",
+        );
       } catch (error) {
         console.error("Error deleting method:", error);
       }

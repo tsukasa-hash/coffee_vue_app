@@ -26,8 +26,9 @@ function showDialog(options: {
 export default async function showDialogWithEachMethod(
   message: string,
   handlers: {
-    onLeftClick: () => void,
-    onRightClick: () => void,
+    // 同期・非同期どちらも対応している。
+    onLeftClick: () => void | Promise<void>,
+    onRightClick: () => void | Promise<void>,
   },
   leftButtonLabel?: string,
   rightButtonLabel?: string,
@@ -35,10 +36,10 @@ export default async function showDialogWithEachMethod(
   const result = await showDialog({ message, leftButtonLabel, rightButtonLabel });
   switch (result) {
     case "left":
-      handlers.onLeftClick();
+      await handlers.onLeftClick?.();
       break;
     case "right":
-      handlers.onRightClick();
+      await handlers.onRightClick?.();
       break;
     default:
       break;
