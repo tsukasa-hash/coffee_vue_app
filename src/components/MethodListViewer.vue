@@ -107,7 +107,9 @@
       <MethodDetailViewer
         :selected-method="selectedMethod"
       />
-      <!-- <UserConfirmDialog /> -->
+      <button @click="showTwoButtonDialog">
+        TwoButtonDialogを表示
+      </button>
     </div>
     <br>
   </div>
@@ -120,14 +122,12 @@ import {
 import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
 import { db } from "../firebase";
-// import UserConfirmDialog from "./dialog/UserConfirmDialog.vue";
 // import BrewingViewerVue from "./BrewingViewer.vue";
+import showDialogWithEachMethod from "./dialog/DialogService";
 
 export default defineComponent({
   components: {
     MethodDetailViewer,
-    // UserConfirmDialog,
-    // BrewingViewerVue,
   },
   data(): { methods: Method[] | null
   , method: Method | null
@@ -190,6 +190,17 @@ export default defineComponent({
       } catch (error) {
         console.error("Error deleting method:", error);
       }
+    },
+    async showTwoButtonDialog() {
+      await showDialogWithEachMethod(
+        "保存しますか？",
+        {
+          onLeftClick: () => { alert("左ボタンが押されました"); },
+          onRightClick: () => { alert("右ボタンが押されました"); },
+        },
+        "はい",
+        "いいえ",
+      );
     },
   },
 });
