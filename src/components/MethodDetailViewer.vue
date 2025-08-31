@@ -160,7 +160,7 @@ import { defineComponent } from "vue";
 import Method from "./method/Method";
 import BrewingViewer from "./BrewingViewer.vue";
 import Procedure from "./method/Procedure";
-import showDialog from "./dialog/ConfirmDialogService";
+import ConfirmDialogService from "./dialog/ConfirmDialogService";
 
 export default defineComponent({
   name: "MethodDetailViewer",
@@ -234,7 +234,7 @@ export default defineComponent({
         const step1: Procedure = procedure[0];
         const time: number = Number(step1.getTime());
         this.initialTime = time;
-        await showDialog({ message: "お疲れ様でした！", buttonLabel: "了解です" });
+        await ConfirmDialogService.showDialog({ message: "お疲れ様でした！", buttonLabel: "了解です" });
         return;
       }
       this.method = this.selectedMethod ? this.selectedMethod : new Method();

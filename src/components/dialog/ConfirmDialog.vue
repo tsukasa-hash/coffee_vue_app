@@ -6,7 +6,7 @@
     <div class="dialog">
       <p>{{ message }}</p>
       <div class="actions">
-        <button @click="onAction()">
+        <button @click="handleConfirm()">
           {{ buttonLabel }}
         </button>
       </div>
@@ -29,14 +29,16 @@ export default defineComponent({
       default: "OK",
     },
   },
+  emits: ["action"],
   data() {
     return {
       visible: true,
     };
   },
   methods: {
-    onAction() {
+    handleConfirm() {
       this.visible = false;
+      this.$emit("action", "confirm");
     },
   },
 });
