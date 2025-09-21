@@ -55,12 +55,38 @@
                   class="col-10 col-md-4"
                   style=""
                 >
-                  <input
+                  <!-- <input
                     id="amountOfCoffeePowder"
                     v-model="amountOfCoffeePowder"
                     type="text"
                     class="form-control"
+                  > -->
+                  <input
+                    v-model.number="form.amountOfCoffeePowder"
+                    type="number"
+                    class="form-control"
+                    @input="$v.form.amountOfCoffeePowder.$touch()"
                   >
+                  <span
+                    v-if="$v.form.amountOfCoffeePowder.$dirty
+                      && !$v.form.amountOfCoffeePowder.required"
+                  >
+                    必須項目です
+                  </span>
+                  <span
+                    v-if="$v.form.amountOfCoffeePowder.$dirty
+                      && !$v.form.amountOfCoffeePowder.minValue"
+                    style="color:red"
+                  >
+                    1以上を入力してください
+                  </span>
+                  <span
+                    v-if="$v.form.amountOfCoffeePowder.$dirty
+                      && !$v.form.amountOfCoffeePowder.between"
+                    style="color:red"
+                  >
+                    1〜1000の範囲で入力してください
+                  </span>
                 </div>
               </div>
               <div class="form-group row">
@@ -258,16 +284,22 @@ import { defineComponent } from "vue";
 import {
   addDoc, collection,
 } from "firebase/firestore";
+import useVuelidate from "@vuelidate/core";
+import { required, minValue, between } from "@vuelidate/validators";
 import { db } from "../firebase";
 import Procedure from "./method/Procedure";
 import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
 // NOTE:error  Dependency cycle via ./router:12  import/no-cycle
 
 export default defineComponent({
+  setup() {
+    const $v = useVuelidate();
+    return { $v };
+  },
   data(): {
     methodName: string,
     typeOfCoffeePowder: string,
-    amountOfCoffeePowder: string,
+    // amountOfCoffeePowder: string,
     amountOfACupOfCoffee: string,
     amountOfHotWater: string,
     temperatureOfHotWater: string,
@@ -284,11 +316,13 @@ export default defineComponent({
     , totalAmount: number
     , time: number
     , totalTime: number }[]
+    , form: {
+      amountOfCoffeePowder: number | null, }
   } {
     return {
       methodName: "",
       typeOfCoffeePowder: "",
-      amountOfCoffeePowder: "",
+      // amountOfCoffeePowder: "",
       amountOfACupOfCoffee: "",
       amountOfHotWater: "",
       temperatureOfHotWater: "",
@@ -305,6 +339,34 @@ export default defineComponent({
           description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
         },
       ],
+      form: {
+        amountOfCoffeePowder: null as number | null,
+      },
+    };
+  },
+  // computed: {
+  //   $v() {
+  //     return useVuelidate(this.$options.validations, this).value;
+  //   },
+  // },
+  // validations: {
+  //   form: {
+  //     amountOfCoffeePowder: {
+  //       required,
+  //       minValue: minValue(1),
+  //       between: between(1, 1000),
+  //     },
+  //   },
+  // },
+  validations() {
+    return {
+      form: {
+        amountOfCoffeePowder: {
+          required,
+          minValue: minValue(1),
+          between: between(1, 1000),
+        },
+      },
     };
   },
   // TODO:合計を自動で計算する
@@ -335,7 +397,7 @@ export default defineComponent({
       await addDoc(collection(db, "method"), {
         methodName: this.methodName,
         typeOfCoffeePowder: this.typeOfCoffeePowder,
-        amountOfCoffeePowder: this.amountOfCoffeePowder,
+        // amountOfCoffeePowder: this.amountOfCoffeePowder,
         amountOfACupOfCoffee: this.amountOfACupOfCoffee,
         amountOfHotWater: this.amountOfHotWater,
         temperatureOfHotWater: this.temperatureOfHotWater,
