@@ -9,7 +9,7 @@
               id="c_form-h"
               class=""
             >
-              <div class=" row">
+              <!-- <div class=" row">
                 <label
                   for="methodName"
                   class="col-2 col-form-label"
@@ -44,7 +44,7 @@
                     class="form-control"
                   >
                 </div>
-              </div>
+              </div> -->
               <div class="form-group row">
                 <label
                   for="amountOfCoffeePowder"
@@ -62,34 +62,35 @@
                     class="form-control"
                   > -->
                   <input
+                    id="amountOfCoffeePowder"
                     v-model.number="form.amountOfCoffeePowder"
                     type="number"
                     class="form-control"
-                    @input="$v.form.amountOfCoffeePowder.$touch()"
+                    @input="v$.amountOfCoffeePowder.$touch()"
                   >
                   <span
-                    v-if="$v.form.amountOfCoffeePowder.$dirty
-                      && !$v.form.amountOfCoffeePowder.required"
+                    v-if="v$.amountOfCoffeePowder.$dirty
+                      && !v$.amountOfCoffeePowder.required.$response"
                   >
                     必須項目です
                   </span>
                   <span
-                    v-if="$v.form.amountOfCoffeePowder.$dirty
-                      && !$v.form.amountOfCoffeePowder.minValue"
+                    v-if="v$.amountOfCoffeePowder.$dirty
+                      && !v$.amountOfCoffeePowder.minValue.$response"
                     style="color:red"
                   >
                     1以上を入力してください
                   </span>
                   <span
-                    v-if="$v.form.amountOfCoffeePowder.$dirty
-                      && !$v.form.amountOfCoffeePowder.between"
+                    v-if="v$.amountOfCoffeePowder.$dirty
+                      && !v$.amountOfCoffeePowder.between.$response"
                     style="color:red"
                   >
                     1〜1000の範囲で入力してください
                   </span>
                 </div>
               </div>
-              <div class="form-group row">
+              <!-- <div class="form-group row">
                 <label
                   for="amountOfACupOfCoffee"
                   class="col-2 col-form-label"
@@ -178,7 +179,7 @@
                     class="form-control"
                   >
                 </div>
-              </div>
+              </div> -->
               <div style="display: flex; flex-wrap: wrap">
                 <h2 style="text-align: left">
                   手順
@@ -203,7 +204,7 @@
                     <th />
                   </tr>
                 </thead>
-                <tbody>
+                <!-- <tbody>
                   <tr
                     v-for="(row, index) in rows"
                     :key="index"
@@ -250,7 +251,7 @@
                       </button>
                     </td>
                   </tr>
-                </tbody>
+                </tbody> -->
               </table>
             </form>
             <button
@@ -280,7 +281,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable import/no-cycle */
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
 import {
   addDoc, collection,
 } from "firebase/firestore";
@@ -293,95 +294,64 @@ import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
 
 export default defineComponent({
   setup() {
-    const $v = useVuelidate();
-    return { $v };
-  },
-  data(): {
-    methodName: string,
-    typeOfCoffeePowder: string,
-    // amountOfCoffeePowder: string,
-    amountOfACupOfCoffee: string,
-    amountOfHotWater: string,
-    temperatureOfHotWater: string,
-    typeOfDripper: string,
-    memo: string,
-    description: string,
-    time: number,
-    amount: number,
-    isSuccess: boolean,
-    message: string,
-    procedures: Procedure[],
-    rows: { description: string
-    , amount: number
-    , totalAmount: number
-    , time: number
-    , totalTime: number }[]
-    , form: {
-      amountOfCoffeePowder: number | null, }
-  } {
-    return {
+    const form = reactive({
       methodName: "",
       typeOfCoffeePowder: "",
-      // amountOfCoffeePowder: "",
+      amountOfCoffeePowder: 0 as number,
       amountOfACupOfCoffee: "",
       amountOfHotWater: "",
       temperatureOfHotWater: "",
       typeOfDripper: "",
       memo: "",
-      description: "",
-      time: 0,
-      amount: 0,
       isSuccess: false,
       message: "",
-      procedures: [],
+      procedures: [] as Procedure[],
       rows: [
         {
           description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
         },
       ],
-      form: {
-        amountOfCoffeePowder: null as number | null,
+    });
+
+    const rules = {
+
+      amountOfCoffeePowder: {
+        required,
+        minValue: minValue(1),
+        between: between(1, 1000),
       },
     };
-  },
-  // computed: {
-  //   $v() {
-  //     return useVuelidate(this.$options.validations, this).value;
-  //   },
-  // },
-  // validations: {
-  //   form: {
-  //     amountOfCoffeePowder: {
-  //       required,
-  //       minValue: minValue(1),
-  //       between: between(1, 1000),
-  //     },
-  //   },
-  // },
-  validations() {
-    return {
-      form: {
-        amountOfCoffeePowder: {
-          required,
-          minValue: minValue(1),
-          between: between(1, 1000),
-        },
-      },
+
+    const v$ = useVuelidate(rules, form);
+
+    const registerMethod = async () => {
+      await addDoc(collection(db, "method"), {
+        methodName: form.methodName,
+        typeOfCoffeePowder: form.typeOfCoffeePowder,
+        // amountOfCoffeePowder: amountOfCoffeePowder.value,
+        amountOfACupOfCoffee: form.amountOfACupOfCoffee,
+        amountOfHotWater: form.amountOfHotWater,
+        temperatureOfHotWater: form.temperatureOfHotWater,
+        typeOfDripper: form.typeOfDripper,
+        memo: form.memo,
+        procedure: form.rows.map((row) => ({
+          description: row.description,
+          amount: row.amount,
+          totalAmount: row.totalAmount,
+          time: row.time,
+          totalTime: row.totalTime,
+        })),
+      });
     };
-  },
-  // TODO:合計を自動で計算する
-  // TODO:詳細をプルダウンで選択できるようにする
-  methods: {
-    // DONE:登録の確認ダイアログを表示する
-    async registerForFirestore() {
+    const registerForFirestore = async () => {
       try {
         await showTwoButtonDialogWithEachMethod(
           "メソッドを登録しますか？",
           {
             onLeftClick: async () => {
               try {
-                await this.registerMethod();
-                await this.$router.push("/top");
+                await registerMethod();
+                // await $router.push("/top");
               } catch (error) {
                 console.error("Error adding document: ", error);
               }
@@ -392,36 +362,24 @@ export default defineComponent({
       } catch (error) {
         console.error("Error adding document: ", error);
       }
-    },
-    async registerMethod() {
-      await addDoc(collection(db, "method"), {
-        methodName: this.methodName,
-        typeOfCoffeePowder: this.typeOfCoffeePowder,
-        // amountOfCoffeePowder: this.amountOfCoffeePowder,
-        amountOfACupOfCoffee: this.amountOfACupOfCoffee,
-        amountOfHotWater: this.amountOfHotWater,
-        temperatureOfHotWater: this.temperatureOfHotWater,
-        typeOfDripper: this.typeOfDripper,
-        memo: this.memo,
-        procedure: this.rows.map((row) => ({
-          description: row.description,
-          amount: row.amount,
-          totalAmount: row.totalAmount,
-          time: row.time,
-          totalTime: row.totalTime,
-        })),
-      });
-    },
-    createRow() {
-      this.rows.push({
+    };
+    const createRow = () => {
+      form.rows.push({
         description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
       });
-    },
-    deleteRow(index: number) {
-      this.rows.splice(index, 1);
-    },
+    };
+    const deleteRow = (index: number) => {
+      form.rows.splice(index, 1);
+    };
+    return {
+      form,
+      registerForFirestore,
+      registerMethod,
+      createRow,
+      deleteRow,
+      v$,
+    };
   },
-
 });
 </script>
 <style scoped>
