@@ -390,6 +390,7 @@ export default defineComponent({
     };
     const formValidationNG = async (): Promise<boolean> => {
       const result = await v$.value.$validate();
+      // 検証結果にエラーがあればfalseが返るため、NGならtrueを返す。
       return !result;
     };
     const registerForFirestore = async () => {
