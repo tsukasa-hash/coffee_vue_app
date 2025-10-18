@@ -27,88 +27,75 @@
         :key="method.id"
         class="el_flexItem"
       >
-        <div class="l-wrapper_02 card-radius_02">
-          <article
-            class="card_02"
+        <div class="l-wrapper card-radius card">
+          <input
+            :id="method.id"
+            v-model="methodId"
+            type="radio"
+            class="radio-inline__input"
+            :value="method.id"
           >
-            <input
-              :id="method.id"
-              v-model="methodId"
-              type="radio"
-              class="radio-inline__input"
-              :value="method.id"
+          <label
+            class="radio-inline__label"
+            :for="method.id"
+          >
+            <button
+              type="button"
+              class="material-icons delete-card-button"
+              @click="deleteMethod(method.id)"
             >
-            <label
-              class="radio-inline__label"
-              :for="method.id"
-            >
-              <button
-                type="button"
-                @click="deleteMethod(method.id)"
-              >
-                <span class="material-icons">
-                  delete_outline
-                </span>
-              </button>
-              <div class="card__header_02">
-                <p class="card__title_02">
-                  {{ method.methodName }}
-                </p>
-              </div>
-              <div class="card__body_02">
-                <table>
-                  <tbody style="text-align: left">
-                    <tr>
-                      <td colspan="2">
-                        {{ method.typeOfCoffeePowder }}
-                      </td>
-                      <td />
-                    </tr>
-                    <tr>
-                      <td>
-                        粉末量
-                      </td>
-                      <td>
-                        {{ method.amountOfCoffeePowder }}
-                        g
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        抽出量
-                      </td>
-                      <td>
-                        {{ method.amountOfACupOfCoffee }}
-                        ml
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        ドリッパー
-                      </td>
-                      <td>
-                        {{ method.typeOfDripper }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </label>
-          </article>
+              delete_outline
+            </button>
+            <p class="card__header card__title">
+              {{ method.methodName }}
+            </p>
+            <table>
+              <tbody style="text-align: left">
+                <tr>
+                  <td colspan="2">
+                    {{ method.typeOfCoffeePowder }}
+                  </td>
+                  <td />
+                </tr>
+                <tr>
+                  <td>
+                    粉末量
+                  </td>
+                  <td>
+                    {{ method.amountOfCoffeePowder }}
+                    g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    抽出量
+                  </td>
+                  <td>
+                    {{ method.amountOfACupOfCoffee }}
+                    ml
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    ドリッパー
+                  </td>
+                  <td>
+                    {{ method.typeOfDripper }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </label>
         </div>
       </div>
-      <br>
     </div>
 
-    <div
+    <MethodDetailViewer
+      v-if="methodIsSelected"
       style="display: flex; flex-wrap: wrap"
       class="detail"
-    >
-      <MethodDetailViewer
-        :selected-method="selectedMethod"
-      />
-    </div>
-    <br>
+      :selected-method="selectedMethod"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -245,38 +232,40 @@ min-height: 256px;
 padding: 0 5px;
 }
 /*--------------------------------------
-  カード型_02
+  カード型
 --------------------------------------*/
-.l-wrapper_02 {
+.l-wrapper {
   margin: 1rem auto;
-  width: 361px;
+  /* width: 361px; */
 }
-.l-wrapper_02:hover {
+.l-wrapper:hover {
   transform: translateY(-3px);
   box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
   transition: all .5s;
 }
-.card-radius_02{
+.card-radius{
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0,0,0,.2);
 }
 
-.card_02 {
+/* .card {
   background-color: #fff;
   box-shadow: 0 0 0px rgba(0, 0, 0, .16);
   color: #212121;
   text-decoration: none;
   min-height: 256px;
   min-width: 361px;
-}
+} */
 
-.card__header_02 {
+/* .card__header {
   display: flex;
   flex-wrap: wrap;
-}
+} */
 
-.card__title_02 {
+.card__title {
+  display: flex;
+  flex-wrap: wrap;
   padding: 1rem 1.5rem 0;
   font-size: 1.6rem;
   order: 1;
@@ -287,19 +276,25 @@ padding: 0 5px;
 
 }
 
-.card__body_02 {
+/* .card__body {
   padding: 0 1.5rem;
-}
+} */
 
-.card__text_02 {
+/* .card__text {
   font-size: .8rem;
   text-align:center;
   text-decoration: none;
-}
+} */
 
-.card__text2_02 {
+/* .card__text2 {
   font-size: .8rem;
   margin-top: 0;
   margin-bottom: 1.5rem;
+} */
+
+ /* 追加 */
+.delete-card-button {
+  width: 40px;
+  height: 40px;
 }
 </style>
