@@ -181,64 +181,115 @@
           >
             +追加
           </button>
-          <span
+          <!-- <span
             v-if="v$.rows.$dirty
               && !v$.rows.required.$response"
+            class="form-validation-NG-col"
           >
             1つ以上の手順を入力してください
-          </span>
+          </span> -->
         </div>
         <table>
           <thead>
             <tr>
-              <th>詳細</th>
-              <th>お湯の量</th>
-              <th>合計量</th>
-              <th>時間</th>
-              <th>合計時間</th>
-              <th />
+              <th class="col-md-2">
+                詳細
+              </th>
+              <th class="col-md-2">
+                お湯の量
+              </th>
+              <th class="col-md-2">
+                合計量
+              </th>
+              <th class="col-md-2">
+                時間
+              </th>
+              <th class="col-md-2">
+                合計時間
+              </th>
+              <th class="col-md-2" />
             </tr>
           </thead>
+          <!-- <tbody v-if="form.rows && v$.rows && v$.rows.$each"> -->
           <tbody>
             <tr
               v-for="(row, index) in form.rows"
               :key="index"
             >
               <td>
-                <input
-                  id="description"
+                <select
                   v-model="row.description"
-                  type="text"
+                  class="form-select"
                 >
+                  <option
+                    value=""
+                    disabled
+                  >
+                    選択してください
+                  </option>
+                  <option value="お湯を注ぐ">
+                    お湯を注ぐ
+                  </option>
+                  <option value="円を描くように注ぐ">
+                    円を描くように注ぐ
+                  </option>
+                  <option value="蒸らす">
+                    蒸らす
+                  </option>
+                  <option value="待つ">
+                    待つ
+                  </option>
+                  <option value="かき混ぜる">
+                    かき混ぜる
+                  </option>
+                  <option value="カップを回す">
+                    カップを回す
+                  </option>
+                </select>
+                <!-- :class="{ 'is-invalid': v$.rows.$each[index]?.description?.$error }"
+                <span v-if="v$.rows.$each[index]?.description?.$error">
+                  説明は必須です
+                </span> -->
+                <!-- <span class="form-validation-NG">
+                  {{ descriptionValidationNgMessage(index) }}
+                </span> -->
               </td>
               <td>
                 <input
                   v-model="row.amount"
-                  type="text"
+                  type="number"
+                  class="form-control"
                 >
               </td>
               <td>
-                <input
+                <!-- <input
                   v-model="row.totalAmount"
                   type="text"
-                >
+                  class="form-control"
+                > -->
+                <!-- {{ totalAmount(index) }} -->
+                {{ row.totalAmount = totalAmount(index) }}
               </td>
               <td>
                 <input
                   v-model="row.time"
-                  type="text"
+                  type="number"
+                  class="form-control"
                 >
               </td>
               <td>
-                <input
+                <!-- <input
                   v-model="row.totalTime"
                   type="text"
-                >
+                  class="form-control"
+                > -->
+                {{ row.totalTime = totalTime(index) }}
               </td>
               <td>
                 <button
                   type="button"
                   class="btn btn-dark"
+                  :disabled="rowHasOneElement()"
                   @click="deleteRow(index)"
                 >
                   <span class="material-icons">
@@ -280,7 +331,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable import/no-cycle */
-import { defineComponent, reactive } from "vue";
+import { defineComponent, nextTick, reactive } from "vue";
 import {
   addDoc, collection,
 } from "firebase/firestore";
@@ -288,8 +339,9 @@ import useVuelidate from "@vuelidate/core";
 import {
   required, minValue, between, maxValue, integer, numeric,
 } from "@vuelidate/validators";
+import { useRouter } from "vue-router";
 import { db } from "../firebase";
-import Procedure from "./method/Procedure";
+// import Procedure from "./method/Procedure";
 import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
 // NOTE:error  Dependency cycle via ./router:12  import/no-cycle
 //  NOTE:Vulidateを使うためにComposition APIに変換した
@@ -307,10 +359,10 @@ export default defineComponent({
       memo: "",
       isSuccess: false,
       message: "",
-      procedures: [] as Procedure[],
+      // procedures: [] as Procedure[],
       rows: [
         {
-          description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
+          description: "", amount: 0 as number, totalAmount: 0 as number, time: 0 as number, totalTime: 0 as number,
         },
       ],
     });
@@ -348,21 +400,21 @@ export default defineComponent({
       memo: { $autoDirty: true },
       rows: {
         $autoDirty: true,
-        required,
+        // required,
         $each: {
           description: { $autoDirty: true, required },
           amount: {
-            $autoDirty: true, required, numeric, integer, minValue: minValue(0),
+            $autoDirty: true, required, numeric, integer, minValue: minValue(1),
           },
-          totalAmount: {
-            $autoDirty: true, required, numeric, integer, minValue: minValue(0),
-          },
+          // totalAmount: {
+          //   $autoDirty: true, required, numeric, integer, minValue: minValue(1),
+          // },
           time: {
-            $autoDirty: true, required, numeric, integer, minValue: minValue(0),
+            $autoDirty: true, required, numeric, integer, minValue: minValue(1),
           },
-          totalTime: {
-            $autoDirty: true, required, numeric, integer, minValue: minValue(0),
-          },
+          // totalTime: {
+          //   $autoDirty: true, required, numeric, integer, minValue: minValue(1),
+          // },
         },
       },
     };
@@ -373,7 +425,7 @@ export default defineComponent({
       await addDoc(collection(db, "method"), {
         methodName: form.methodName,
         typeOfCoffeePowder: form.typeOfCoffeePowder,
-        // amountOfCoffeePowder: amountOfCoffeePowder.value,
+        amountOfCoffeePowder: form.amountOfCoffeePowder,
         amountOfACupOfCoffee: form.amountOfACupOfCoffee,
         amountOfHotWater: form.amountOfHotWater,
         temperatureOfHotWater: form.temperatureOfHotWater,
@@ -393,6 +445,7 @@ export default defineComponent({
       // 検証結果にエラーがあればfalseが返るため、NGならtrueを返す。
       return !result;
     };
+    const router = useRouter();
     const registerForFirestore = async () => {
       // 入力チェックにエラーがあれば処理を中断する。
       if (await formValidationNG()) return;
@@ -403,7 +456,7 @@ export default defineComponent({
             onLeftClick: async () => {
               try {
                 await registerMethod();
-                // await $router.push("/top");
+                await router.push("/top");
               } catch (error) {
                 console.error("Error adding document: ", error);
               }
@@ -415,6 +468,15 @@ export default defineComponent({
         console.error("Error adding document: ", error);
       }
     };
+    const totalAmount = (index: number) => {
+      if (index === 0) return form.rows[0].amount;
+      return form.rows[index - 1].totalAmount + form.rows[index].amount;
+    };
+    const totalTime = (index: number) => {
+      if (index === 0) return form.rows[0].time;
+      return form.rows[index - 1].totalTime + form.rows[index].time;
+    };
+
     // FIXME:共通化したい
     const methodNameValidation = () => {
       if (!v$.value.methodName.$dirty) return "";
@@ -489,11 +551,28 @@ export default defineComponent({
       if (!v$.value.typeOfDripper.required.$response) return "必須項目です";
       return "";
     };
+    // TODO:手順の入力チェックのエラーメッセージを表示させる。まずは自力で作る。
+    // const descriptionValidationNgMessage = (index: number) => {
+      // if (!v$.value.rows.$dirty) return index;
+      // console.log(form.rows[0]);
 
-    const createRow = () => {
+    // console.log(v$.value.rows.$validate());
+
+    // return index;
+    // return index;
+    // if (!v$.value.rows[index]?.description.$dirty) return "";
+    // v$.value.rows.forEach((element) => {
+    //   if (!element.description.required.$response) return "必須項目です";
+    // });
+    // if (!v$.value.rows.description.required.$response) return "必須項目です";
+    // };
+    const rowHasOneElement = () => form.rows.length === 1;
+
+    const createRow = async () => {
       form.rows.push({
         description: "", amount: 0, totalAmount: 0, time: 0, totalTime: 0,
       });
+      await nextTick();
     };
     const deleteRow = (index: number) => {
       form.rows.splice(index, 1);
@@ -505,6 +584,8 @@ export default defineComponent({
       createRow,
       deleteRow,
       v$,
+      totalAmount,
+      totalTime,
       methodNameValidation,
       amountOfCoffeePowderValidation,
       typeOfCoffeePowderValidation,
@@ -519,6 +600,8 @@ export default defineComponent({
       amountOfHotWaterValidationNgMessage,
       temperatureOfHotWaterValidationNgMessage,
       typeOfDripperValidationNgMessage,
+      // descriptionValidationNgMessage,
+      rowHasOneElement,
     };
   },
 });
