@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: #c2b180">
+  <div>
     <p>ようこそ、ゲストさん</p>
     <!-- TODO:開く事に変更してユーザに寄り添うコメントを表示したい -->
     <h1>今日もコーヒーを淹れよう</h1>
@@ -15,12 +15,6 @@
         style="width: 20px; height: 20px;"
       >
     </router-link>
-    <router-link to="/">
-      トップページに戻る
-    </router-link>
-    <!-- <router-link to="/firestore_test">
-      Firestoreのテスト
-    </router-link> -->
     <div class="bl_flexContainer">
       <div
         v-for="method in methods"
@@ -93,7 +87,7 @@
     <MethodDetailViewer
       v-if="methodIsSelected"
       style="display: flex; flex-wrap: wrap"
-      class="detail"
+      class="h-75"
       :selected-method="selectedMethod"
     />
   </div>
@@ -106,7 +100,6 @@ import {
 import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
 import { db } from "../firebase";
-// import BrewingViewerVue from "./BrewingViewer.vue";
 import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
 
 export default defineComponent({
@@ -210,33 +203,15 @@ export default defineComponent({
   text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
 }
 
-.radio-inline__input:focus + .radio-inline__label {
-  outline-color: #4d90fe;
-  outline-offset: -2px;
-  outline-style: auto;
-  outline-width: 5px;
-}
-
 .bl_flexContainer {
 display: flex;
-/* flex-wrap: wrap; */
 overflow-x:scroll;
-/* justify-content: space-between; */
 padding: 10px;
 }
 .el_flexItem {
-/* width: 20%; */
-min-width: 361px;
-/* height: 300px; */
+min-width: 377px;
 min-height: 256px;
 padding: 0 5px;
-}
-/*--------------------------------------
-  カード型
---------------------------------------*/
-.l-wrapper {
-  margin: 1rem auto;
-  /* width: 361px; */
 }
 .l-wrapper:hover {
   transform: translateY(-3px);
@@ -248,20 +223,6 @@ padding: 0 5px;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0,0,0,.2);
 }
-
-/* .card {
-  background-color: #fff;
-  box-shadow: 0 0 0px rgba(0, 0, 0, .16);
-  color: #212121;
-  text-decoration: none;
-  min-height: 256px;
-  min-width: 361px;
-} */
-
-/* .card__header {
-  display: flex;
-  flex-wrap: wrap;
-} */
 
 .card__title {
   display: flex;
@@ -275,22 +236,6 @@ padding: 0 5px;
   border-bottom: solid 3px black;
 
 }
-
-/* .card__body {
-  padding: 0 1.5rem;
-} */
-
-/* .card__text {
-  font-size: .8rem;
-  text-align:center;
-  text-decoration: none;
-} */
-
-/* .card__text2 {
-  font-size: .8rem;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-} */
 
  /* 追加 */
 .delete-card-button {

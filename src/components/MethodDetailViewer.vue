@@ -82,26 +82,6 @@
           @processing="onTimerProcessing"
           @reset="onResetTimer"
         />
-        <!-- <button
-          class="btn btn-dark"
-          style="width: 100px; height: 44px;"
-        >
-          <span class="material-icons">
-            coffee_maker
-          </span>
-          DRIP
-        </button> -->
-        <router-link to="/brewing">
-          <button
-            class="btn btn-dark"
-            style="width: 100px; height: 44px;"
-          >
-            <span class="material-icons">
-              coffee_maker
-            </span>
-            DRIP
-          </button>
-        </router-link>
       </div>
       <div>
         <table>
@@ -151,7 +131,6 @@
           </tbody>
         </table>
       </div>
-      {{ elapsedTime }} / {{ initialTime }}
     </div>
   </div>
 </template>
@@ -195,10 +174,10 @@ export default defineComponent({
       * 100);
       // 進捗に応じて色を変える
       return `linear-gradient(to right,
-      #ff0000 0%, 
-      #ff0000 ${percent}%, 
-      #0000ff ${percent}%, 
-      #0000ff 100%)`;
+      rgba(173, 118, 77, 0.58) 0%, 
+      rgba(173, 118, 77, 0.58) ${percent}%, 
+      #fff ${percent}%, 
+      #fff 100%)`;
     },
   },
   watch: {
@@ -210,7 +189,6 @@ export default defineComponent({
       const time: number = Number(step1.getTime());
       this.initialTime = time;
       this.numberOfTotalSteps = procedure.length;
-      // console.log(`手順の数: ${this.numberOfTotalSteps}`);
     },
   },
   mounted() {

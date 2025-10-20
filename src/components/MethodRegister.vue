@@ -181,13 +181,6 @@
           >
             +追加
           </button>
-          <!-- <span
-            v-if="v$.rows.$dirty
-              && !v$.rows.required.$response"
-            class="form-validation-NG-col"
-          >
-            1つ以上の手順を入力してください
-          </span> -->
         </div>
         <table>
           <thead>
@@ -210,7 +203,6 @@
               <th class="col-md-2" />
             </tr>
           </thead>
-          <!-- <tbody v-if="form.rows && v$.rows && v$.rows.$each"> -->
           <tbody>
             <tr
               v-for="(row, index) in form.rows"
@@ -246,13 +238,6 @@
                     カップを回す
                   </option>
                 </select>
-                <!-- :class="{ 'is-invalid': v$.rows.$each[index]?.description?.$error }"
-                <span v-if="v$.rows.$each[index]?.description?.$error">
-                  説明は必須です
-                </span> -->
-                <!-- <span class="form-validation-NG">
-                  {{ descriptionValidationNgMessage(index) }}
-                </span> -->
               </td>
               <td>
                 <input
@@ -262,12 +247,6 @@
                 >
               </td>
               <td>
-                <!-- <input
-                  v-model="row.totalAmount"
-                  type="text"
-                  class="form-control"
-                > -->
-                <!-- {{ totalAmount(index) }} -->
                 {{ row.totalAmount = totalAmount(index) }}
               </td>
               <td>
@@ -278,11 +257,6 @@
                 >
               </td>
               <td>
-                <!-- <input
-                  v-model="row.totalTime"
-                  type="text"
-                  class="form-control"
-                > -->
                 {{ row.totalTime = totalTime(index) }}
               </td>
               <td>
@@ -298,12 +272,6 @@
                 </button>
               </td>
             </tr>
-            <!-- <div
-                    v-if="v$.rows[index]?.description.$dirty
-                      && !v$.rows[index]?.description.required"
-                  >
-                    必須項目です
-                  </div> -->
           </tbody>
         </table>
       </form>
@@ -322,10 +290,6 @@
     </div>
     <router-link to="/top">
       メニューに戻る
-    </router-link>
-    <br>
-    <router-link to="/">
-      トップページに戻る
     </router-link>
   </div>
 </template>
@@ -406,15 +370,9 @@ export default defineComponent({
           amount: {
             $autoDirty: true, required, numeric, integer, minValue: minValue(1),
           },
-          // totalAmount: {
-          //   $autoDirty: true, required, numeric, integer, minValue: minValue(1),
-          // },
           time: {
             $autoDirty: true, required, numeric, integer, minValue: minValue(1),
           },
-          // totalTime: {
-          //   $autoDirty: true, required, numeric, integer, minValue: minValue(1),
-          // },
         },
       },
     };
