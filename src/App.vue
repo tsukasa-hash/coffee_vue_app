@@ -1,5 +1,8 @@
 <template>
   <div>
+    <router-link to="/">
+      トップページに戻る
+    </router-link>
     <router-view />
   </div>
 </template>

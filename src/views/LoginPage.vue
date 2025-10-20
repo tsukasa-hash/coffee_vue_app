@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO:トップメニューへ表示ボタンを表示させない -->
   <article
     class="max-w-7xl w-full bg-gray-200 sm:bg-red-200 md:bg-yellow-200 lg:bg-green-200
      xl:bg-blue-200"
