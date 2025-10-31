@@ -43,15 +43,14 @@ export default defineComponent({
     },
   },
   // タイマーのカウントダウンが終了したことを親コンポーネントに伝える
-  emits: ["finished", "processing", "reset"],
+  emits: ["finished", "reset"],
   data(): { timerFSM: TimerFSM | null, controller: NormalTimerController, method: Method | null
-  , elapsedTime: number, minutes: string, seconds: string, disabledStartButton: boolean
+  , minutes: string, seconds: string, disabledStartButton: boolean
   , disabledStopButton: boolean, disabledResetButton: boolean } {
     return {
       timerFSM: null,
       controller: new NormalTimerController(),
       method: null,
-      elapsedTime: 0,
       minutes: "",
       seconds: "",
       disabledStartButton: false,
@@ -91,8 +90,6 @@ export default defineComponent({
     this.timerFSM.setUpdateCallback(() => {
       this.minutes = this.timerFSM?.getMinutes() || "00";
       this.seconds = this.timerFSM?.getSeconds() || "00";
-      this.elapsedTime = this.timerFSM?.getRemainingTime() || 0;
-      this.$emit("processing", this.elapsedTime);
     });
 
     // 終了時に親コンポーネントへ通知

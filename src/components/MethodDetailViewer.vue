@@ -84,13 +84,11 @@
           ref="brewingViewer"
           :time="initialTime"
           @finished="onTimerFinished"
-          @processing="onTimerProcessing"
           @reset="onResetTimer"
         />
         <section>
           <h4 class="text-start gap-2">
-            {{ totalAmountOfPreviousStep }}ml
-            →{{ selectedMethod.procedure[currentStep].totalAmount }}ml
+            {{ totalAmountOfPreviousStep }}ml→{{ totalAmountOfCurrentStep }}ml
           </h4>
         </section>
       </section>
@@ -115,7 +113,7 @@
               <td
                 class="col-md-4 rounded-end text-end"
               >
-                00:{{ step.time }}
+                {{ minutes(step.time) }}:{{ seconds(step.time) }}
                 <br>
                 {{ step.amount }}ml
               </td>
@@ -124,7 +122,6 @@
         </table>
       </section>
     </div>
-    <!-- </div> -->
   </div>
 </template>
 <script lang="ts">
@@ -133,6 +130,9 @@ import Method from "./method/Method";
 import BrewingViewer from "./BrewingViewer.vue";
 import Procedure from "./method/Procedure";
 import ConfirmDialogService from "./dialog/ConfirmDialogService";
+
+const AT_FIRST_STEP = 0;
+const INITIAL_AMOUNT_OF_WATER = 0;
 
 export default defineComponent({
   name: "MethodDetailViewer",
@@ -143,94 +143,88 @@ export default defineComponent({
   data(): {
     // brewingViewerに渡すカウントダウンタイマーの初期時間
     initialTime: number,
-    method: Method | undefined,
-    elapsedTime: number,
     intervalId: number | null,
     currentStep: number,
     numberOfTotalSteps: number,
+    procedure: Procedure[],
   } {
     return {
       initialTime: 0,
-      method: new Method(),
-      elapsedTime: 0,
       intervalId: null as number | null,
-      currentStep: 0,
+      currentStep: AT_FIRST_STEP,
       numberOfTotalSteps: 0,
+      procedure: [],
     };
   },
   computed: {
     totalAmountOfPreviousStep(): number {
-      if (this.currentStep === 0) {
-        return 0;
-      }
-      const rawProcedure = this.selectedMethod?.getProcedure?.() ?? [];
-      const procedure = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
-      const prev = procedure[this.currentStep - 1];
-      return prev.getTotalAmount();
+      if (this.isAtFirstStep()) return INITIAL_AMOUNT_OF_WATER;
+      return this.procedure[this.currentStep - 1]?.getTotalAmount() ?? 0;
+    },
+    totalAmountOfCurrentStep(): number {
+      return this.procedure[this.currentStep]?.getTotalAmount() ?? 0;
     },
   },
   watch: {
     selectedMethod() {
-      this.method = this.selectedMethod ? this.selectedMethod : new Method();
-      const rawProcedure = this.method.getProcedure();
-      const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
-      const step1: Procedure = procedure[0];
-      const time: number = Number(step1.getTime());
-      this.initialTime = time;
-      this.numberOfTotalSteps = procedure.length;
+      this.initializeTimerAndProcedure();
     },
   },
   mounted() {
-    this.method = this.selectedMethod;
+    this.initializeTimerAndProcedure();
   },
   methods: {
-    // タイマーのスタートと同時に、プログレスバーをスタートする。
+    isAtFirstStep(): boolean {
+      return this.currentStep === AT_FIRST_STEP;
+    },
     // DONE:タイマーの時刻と同期させる。
     // タイマーが終わったら次の手順に進み、タイマーを実行する。
     async onTimerFinished() {
       // 手順1は初期描画時に渡すため、タイマー終了時に最初に渡す値は1（手順2）となる。
-      this.currentStep += 1;
-      if (this.currentStep >= this.numberOfTotalSteps) {
-        // 全ての手順が完了したとき、初期化し、終了する。
-        this.currentStep = 0;
-        this.elapsedTime = 0;
-        // FIXME:methodを取り出す処理をまとめたい。
-        this.method = this.selectedMethod ? this.selectedMethod : new Method();
-        const rawProcedure = this.method.getProcedure();
-        const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
-        const step1: Procedure = procedure[0];
-        const time: number = Number(step1.getTime());
-        this.initialTime = time;
+      this.moveOnToTheNextStep();
+      if (this.allStepsAreDone()) {
+        this.initializeTimerAndProcedure();
         await ConfirmDialogService.showDialog({ message: "お疲れ様でした！", buttonLabel: "了解です" });
-        return;
+      } else {
+        await this.startNextStep();
       }
-      this.method = this.selectedMethod ? this.selectedMethod : new Method();
-      const rawProcedure = this.method.getProcedure();
-      const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
+    },
+    onResetTimer() {
+      this.initializeTimerAndProcedure();
+    },
+    moveOnToTheNextStep() {
+      this.currentStep += 1;
+    },
+    allStepsAreDone(): boolean {
+      return this.currentStep >= this.numberOfTotalSteps;
+    },
+    async startNextStep() {
+      // ここでTimerに初期値を設定する。最初は画面描画時に渡している。
+      this.initialTime = this.stepTime(this.currentStep);
 
-      const nextStep: Procedure = procedure[this.currentStep];
-      const time: number = Number(nextStep.getTime());
-      this.initialTime = time;
-
-      // ここでTimerに初期値を設定する。最初は画面描画時に渡している。2回目以降は初期値をどうにかして渡さないといけないが今は渡していない。
       // $nextTickを使って、inititalTimeを設定した後にBrewingViewerのstartTimerを呼び出す。
       await this.$nextTick();
 
       const brewingViewer = this.$refs.brewingViewer as { startTimer: () => void };
       brewingViewer.startTimer();
     },
-    onTimerProcessing(elapsedTime: number) {
-      this.elapsedTime = elapsedTime;
+    stepTime(step: number): number {
+      return this.procedure[step].getTime();
     },
-    onResetTimer() {
-      // FIXME:onTimerFinishedの最後の手順のときと処理と同じなので処理をまとめたい。
-      this.currentStep = 0;
-      this.method = this.selectedMethod ? this.selectedMethod : new Method();
-      const rawProcedure = this.method.getProcedure();
-      const procedure: Procedure[] = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
-      const step1: Procedure = procedure[0];
-      const time: number = Number(step1.getTime());
-      this.initialTime = time;
+    initializeTimerAndProcedure() {
+      this.currentStep = AT_FIRST_STEP;
+      this.procedure = this.selectedMethod?.getProcedure?.() ?? [];
+      this.numberOfTotalSteps = this.procedure.length;
+      this.initialTime = this.stepTime(AT_FIRST_STEP);
+    },
+    // TODO:TimerControllerにも同じ処理があるのでまとめたい。
+    minutes(seconds: number): string {
+      return Math.floor((seconds / 60) % 60)
+        .toString()
+        .padStart(2, "0");
+    },
+    seconds(seconds: number): string {
+      return (seconds % 60).toString().padStart(2, "0");
     },
   },
 });

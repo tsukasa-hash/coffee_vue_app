@@ -147,6 +147,7 @@ export default defineComponent({
     },
     // TODO: Procedureを取得できるようにする
     // TODO: firestoreの処理を1つにまとめる
+    // TODO:Procedureのtimeをnumberで受け取る。今はwarningが出ている
     async getMethodsFromFirestore() {
       const querySnapshot = await getDocs(collection(db, "method"));
       this.methods = querySnapshot.docs.map((document) => {

@@ -134,6 +134,7 @@ export default class Method {
   }
 
   public getProcedure(): Procedure[] {
-    return this.procedure;
+    // procedureはプレーオブジェクト（DBからしゅとくしたまま）であるので、クラスインスタンスに置き換える。
+    return this.procedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
   }
 }
