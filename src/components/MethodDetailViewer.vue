@@ -1,80 +1,85 @@
 <template>
-  <div style="display: flex; flex-wrap: wrap">
-    <h1 style="border-top: 1px solid #ddd" />
-    <div style="width: 900px;min-height: 430px">
-      <h2 style="text-align: left">
-        メソッドの詳細
+  <div class="container d-flex flex-wrap">
+    <div class="col-md-6 mr-1 container py-3">
+      <h2
+        class="text-start mb-0"
+        style="height: 80px"
+      >
+        {{ selectedMethod.methodName }}
       </h2>
-      <table>
-        <tbody>
-          <tr>
-            <td style="text-align: left">
-              コーヒーの粉
-            </td>
-            <td>
-              {{ selectedMethod.typeOfCoffeePowder }}
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">
-              コーヒー粉の量
-            </td>
-            <td>
-              {{ selectedMethod.amountOfCoffeePowder }}
-              g
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">
-              コーヒーの量
-            </td>
-            <td>
-              {{ selectedMethod.amountOfACupOfCoffee }}
-              ml
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">
-              抽出に必要なお湯の量
-            </td>
-            <td>
-              {{ selectedMethod.amountOfHotWater }}
-              ml
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">
-              お湯の温度
-            </td>
-            <td>
-              {{ selectedMethod.temperatureOfHotWater }}
-              ℃
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">
-              ドリッパーの種類
-            </td>
-            <td>
-              {{ selectedMethod.typeOfDripper }}
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">
-              メモ
-            </td>
-            <td>
-              {{ selectedMethod.memo }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <section class="col-lg-8">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td
+                class="col-md-4 text-start align-middle"
+              >
+                コーヒーの粉
+              </td>
+              <td class="col-md-8 text-end align-middle">
+                {{ selectedMethod.typeOfCoffeePowder }}
+              </td>
+            </tr>
+            <tr>
+              <td class="text-start align-middle">
+                コーヒー粉の量
+              </td>
+              <td class="text-end align-middle">
+                {{ selectedMethod.amountOfCoffeePowder }}
+                g
+              </td>
+            </tr>
+            <tr>
+              <td class="text-start align-middle">
+                コーヒーの量
+              </td>
+              <td class="text-end align-middle">
+                {{ selectedMethod.amountOfACupOfCoffee }}
+                ml
+              </td>
+            </tr>
+            <tr>
+              <td class="text-start align-middle">
+                抽出に必要なお湯の量
+              </td>
+              <td class="text-end align-middle">
+                {{ selectedMethod.amountOfHotWater }}
+                ml
+              </td>
+            </tr>
+            <tr>
+              <td class="text-start align-middle">
+                お湯の温度
+              </td>
+              <td class="text-end align-middle">
+                {{ selectedMethod.temperatureOfHotWater }}
+                ℃
+              </td>
+            </tr>
+            <tr>
+              <td class="text-start align-middle">
+                ドリッパーの種類
+              </td>
+              <td class="text-end align-middle">
+                {{ selectedMethod.typeOfDripper }}
+              </td>
+            </tr>
+            <tr>
+              <td class="text-start align-middle">
+                メモ
+              </td>
+              <td class="text-end align-middle">
+                {{ selectedMethod.memo }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </div>
-    <div style="width: 900px;min-height: 430px">
-      <div style="display: flex; flex-wrap: wrap">
-        <h2 style="text-align: left;padding-right: 10px">
-          手順
-        </h2>
+    <div class="col-md-6 container py-3">
+      <section
+        style="width: 312px;height: 80px;"
+      >
         <BrewingViewer
           ref="brewingViewer"
           :time="initialTime"
@@ -82,56 +87,44 @@
           @processing="onTimerProcessing"
           @reset="onResetTimer"
         />
-      </div>
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th>詳細</th>
-              <th />
-              <th>合計</th>
-              <th />
-            </tr>
-          </thead>
+        <section>
+          <h4 class="text-start gap-2">
+            {{ totalAmountOfPreviousStep }}ml
+            →{{ selectedMethod.procedure[currentStep].totalAmount }}ml
+          </h4>
+        </section>
+      </section>
+      <section
+        class="col-lg-6 card card-body"
+        style="max-width: 312px"
+      >
+        <table class="table table-borderless">
           <tbody
             v-for="(step, index)
               in
                 selectedMethod.procedure"
             :key="index"
           >
-            <tr>
-              <td
-                v-if="index === currentStep"
-                :style="{ background: gradientStyle, textAlign: 'left', rowSpan: '2' }"
-              >
+            <tr
+              :class="['text-start align-middle'
+                       , index === currentStep ? 'table-info': '']"
+            >
+              <td class="col-md-8 rounded-start">
                 {{ step.description }}
               </td>
               <td
-                v-else
-                :style="{textAlign: 'left', rowSpan: '2' }"
+                class="col-md-4 rounded-end text-end"
               >
-                {{ step.description }}
-              </td>
-              <td style="text-align: right">
-                {{ step.time }}秒
-              </td>
-              <td style="text-align: right">
-                {{ step.totalTime }}秒
-              </td>
-            </tr>
-            <tr>
-              <td />
-              <td style="text-align: right">
+                00:{{ step.time }}
+                <br>
                 {{ step.amount }}ml
-              </td>
-              <td style="text-align: right">
-                {{ step.totalAmount }}ml
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
+      </section>
     </div>
+    <!-- </div> -->
   </div>
 </template>
 <script lang="ts">
@@ -166,18 +159,14 @@ export default defineComponent({
     };
   },
   computed: {
-    // DONE:タイマーに応じて該当の手順だけ色を変える。
-    // TODO:ミリ秒単位で変化を滑らかにする
-    gradientStyle(): string {
-      // elapsedTimeはタイマーの経過時間なので、初期時間からの経過時間を引いて、進捗を計算する。
-      const percent = Math.min(100, ((this.initialTime - this.elapsedTime) / this.initialTime)
-      * 100);
-      // 進捗に応じて色を変える
-      return `linear-gradient(to right,
-      rgba(173, 118, 77, 0.58) 0%, 
-      rgba(173, 118, 77, 0.58) ${percent}%, 
-      #fff ${percent}%, 
-      #fff 100%)`;
+    totalAmountOfPreviousStep(): number {
+      if (this.currentStep === 0) {
+        return 0;
+      }
+      const rawProcedure = this.selectedMethod?.getProcedure?.() ?? [];
+      const procedure = rawProcedure.map((p) => Object.assign(new Procedure("", 0, 0), p));
+      const prev = procedure[this.currentStep - 1];
+      return prev.getTotalAmount();
     },
   },
   watch: {

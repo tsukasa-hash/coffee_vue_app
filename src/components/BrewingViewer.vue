@@ -1,31 +1,31 @@
 <template>
-  <div
-    style="width: 300px"
-  >
-    {{ minutes }} : {{ seconds }}
-    <br>
-    <button
-      class="btn btn-light"
-      :disabled="disabledStartButton"
-      @click="startTimer"
-    >
-      スタート
-    </button>
-    <button
-      class="btn btn-light"
-      :disabled="disabledStopButton"
-      @click="stopTimer"
-    >
-      ストップ
-    </button>
-    <button
-      class="btn btn-light"
-      :disabled="disabledResetButton"
-      @click="resetTimer"
-    >
-      リセット
-    </button>
-    <br>
+  <div class="d-flex justify-content-between">
+    <h1 class="text-start">
+      {{ minutes }} : {{ seconds }}
+    </h1>
+    <section>
+      <button
+        v-if="!disabledStartButton"
+        class="btn btn-dark text-nowrap p-2"
+        @click="startTimer"
+      >
+        スタート
+      </button>
+      <button
+        v-if="!disabledStopButton"
+        class="btn btn-dark text-nowrap p-2"
+        @click="stopTimer"
+      >
+        ストップ
+      </button>
+      <button
+        class="btn btn-dark text-nowrap p-2"
+        :disabled="disabledResetButton"
+        @click="resetTimer"
+      >
+        リセット
+      </button>
+    </section>
   </div>
 </template>
 <script lang="ts">

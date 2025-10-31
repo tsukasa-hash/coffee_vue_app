@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <p>ようこそ、ゲストさん</p>
+  <div class="container">
     <!-- TODO:開く事に変更してユーザに寄り添うコメントを表示したい -->
     <h1>今日もコーヒーを淹れよう</h1>
 
@@ -15,7 +14,7 @@
         style="width: 20px; height: 20px;"
       >
     </router-link>
-    <div class="bl_flexContainer">
+    <div class="bl_flexContainer method-list-container">
       <div
         v-for="method in methods"
         :key="method.id"
@@ -86,8 +85,7 @@
 
     <MethodDetailViewer
       v-if="methodIsSelected"
-      style="display: flex; flex-wrap: wrap"
-      class="h-75"
+      class="py-3"
       :selected-method="selectedMethod"
     />
   </div>
@@ -241,5 +239,21 @@ padding: 0 5px;
 .delete-card-button {
   width: 40px;
   height: 40px;
+}
+
+.method-list-container::-webkit-scrollbar{
+  background: transparent;
+  width: 5px;
+  height: 5px;
+  display: block;
+}
+.method-list-container:hover::-webkit-scrollbar{
+  background: lightgray;
+  width: 5px;
+  height: 5px;
+  display: block;
+}
+.method-list-container:hover::-webkit-scrollbar-thumb{
+  background-color: gray;
 }
 </style>

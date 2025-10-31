@@ -19,6 +19,10 @@ export default class Procedure {
     return this.time;
   }
 
+  public getTotalAmount(): number {
+    return this.totalAmount;
+  }
+
   //   public get time(): number {
   //     return this.time;
   //   }
