@@ -30,7 +30,7 @@
     <!-- TODO:ユーザ登録ページを作成する -->
     <button
       class="btn btn-light shadow-sm"
-      @click="createAccount"
+      @click="showUserRegisterPage"
     >
       Sign Up
     </button>
@@ -79,6 +79,7 @@ export default defineComponent({
   },
   methods: {
     login() {
+      this.errMsg = "";
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then(async () => {
           await this.showTopPage();
@@ -86,6 +87,13 @@ export default defineComponent({
         .catch((error: FirebaseError) => {
           this.showLoginErroer(error);
         });
+    },
+    async showUserRegisterPage() {
+      try {
+        await this.$router.push("/user_register");
+      } catch (error) {
+        console.error("Navigation error:", error);
+      }
     },
     createAccount() {
       createUserWithEmailAndPassword(auth, this.email, this.password)

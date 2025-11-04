@@ -7,6 +7,7 @@ import MethodListViewer from "./components/MethodListViewer.vue";
 import BrewingViewer from "./components/BrewingViewer.vue";
 import LoginPage from "./views/LoginPage.vue";
 import FirestoreTest from "./views/FirestoreTest.vue";
+import UserRegister from "./components/UserRegister.vue";
 
 const routes = [
   // {
@@ -50,6 +51,11 @@ const routes = [
     path: "/firestore_test",
     name: "firestore_test",
     component: FirestoreTest,
+  },
+  {
+    path: "/user_register",
+    name: "user_register",
+    component: UserRegister,
   },
 ];
 
