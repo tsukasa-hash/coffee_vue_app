@@ -24,7 +24,6 @@ export default defineComponent({
     const logout = () => {
       auth.signOut()
         .then(() => {
-          console.log("ログアウトしました");
         })
         .catch((error: FirebaseError) => {
           console.error("ログアウトに失敗しました", error);

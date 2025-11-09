@@ -65,11 +65,12 @@
 import { defineComponent, reactive } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { FirebaseError } from "firebase/app";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth } from "../firebase";
 
 export default defineComponent({
   setup() {
+    // TODO:ユーザ名の入力欄を追加する
     const form = reactive({
       username: "",
       email: "",
@@ -87,47 +88,23 @@ export default defineComponent({
       const result = await v$.value.$validate();
       return !result;
     };
-    // const createAccount = async () => {
-    //   try {
-    //     const userCredentia
-    // = await createUserWithEmailAndPassword(auth, form.email, form.password);
-    //     alert("ユーザ登録に成功しました");
-    //     console.log(userCredentia);
-    //     form.errMsg = "";
-    //     // 必要ならリダイレクト等を行う (例: router.push)
-    //   } catch (error) {
-    //     const e = error as FirebaseError;
-    //     const msg = e?.message ?? "ユーザ登録に失敗しました";
-    //     alert(msg);
-    //     console.error(error);
-    //     form.errMsg = msg;
-    //   }
-    // };
     const createAccount = () => {
       // TODO:authenticationにない入力チェックをする
-      // TODO:メールアドレス宛にメールを送り、メールアドレスが使えることを確認する
+      // DONE:メールアドレス宛にメールを送り、メールアドレスが使えることを確認する
       createUserWithEmailAndPassword(auth, form.email, form.password)
-        .then((user) => {
-          alert("ユーザ登録に成功しました");
-          console.log(user);
+        .then((userCredential) => {
+          sendEmailVerification(userCredential.user)
+            .then(() => {
+              alert("メールを送信しました。メール内のリンクをクリックしてメールアドレスの認証を完了させてください。");
+            })
+            .catch((error: FirebaseError) => {
+              alert(error.message);
+            });
         })
         .catch((error: FirebaseError) => {
-        // this.showLoginErroer(error);
           alert(error.message);
-        // form.errMsg = "ユーザ登録に失敗しました";
         });
     };
-    // showLoginErroer(error: FirebaseError) {
-    //   if (error.code === AuthErrorCodes.USER_DELETED) {
-    //     this.errMsg = "ユーザが見つかりません";
-    //   } else if (error.code === AuthErrorCodes.INVALID_PASSWORD) {
-    //     this.errMsg = "パスワードが間違っています";
-    //   } else if (error.code === AuthErrorCodes.INVALID_EMAIL) {
-    //     this.errMsg = "メールアドレスの形式が正しくありません";
-    //   } else {
-    //     this.errMsg = "ログインに失敗しました";
-    //   }
-    // },
     return {
       form,
       formValidationNG,

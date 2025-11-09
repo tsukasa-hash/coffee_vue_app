@@ -27,7 +27,7 @@
     >
       ログイン
     </button>
-    <!-- TODO:ユーザ登録ページを作成する -->
+    <!-- DONE:ユーザ登録ページを作成する -->
     <button
       class="btn btn-light shadow-sm"
       @click="showUserRegisterPage"
@@ -52,7 +52,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import {
-  signInWithEmailAndPassword, createUserWithEmailAndPassword, AuthErrorCodes,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, AuthErrorCodes, UserCredential,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "../firebase";
@@ -73,7 +73,12 @@ export default defineComponent({
     login() {
       this.errMsg = "";
       signInWithEmailAndPassword(auth, this.email, this.password)
-        .then(async () => {
+        .then(async (userCredential) => {
+          // FIXME:!user.isEmailVerifiedにしたい。
+          if (!this.isEmailVerified(userCredential)) {
+            this.errMsg = "メールアドレスの認証が完了していません。登録したメールアドレスのリンクをクリックして認証を完了させてください。";
+            return;
+          }
           await this.showTopPage();
         })
         .catch((error: FirebaseError) => {
@@ -104,6 +109,9 @@ export default defineComponent({
       } else {
         this.errMsg = "ログインに失敗しました";
       }
+    },
+    isEmailVerified(arg: UserCredential) {
+      return arg.user.emailVerified;
     },
     async showTopPage() {
       try {
