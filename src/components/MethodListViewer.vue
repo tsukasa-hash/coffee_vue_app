@@ -151,8 +151,7 @@ export default defineComponent({
     // TODO:Procedureのtimeをnumberで受け取る。今はwarningが出ている
     async getMethodsFromFirestore() {
 const uid = getAuth().currentUser?.uid;
-      const methodPath = `users/${uid}/method`;
-      const querySnapshot = await getDocs(collection(db, methodPath));
+      const querySnapshot = await getDocs(collection(db, "users", String(uid), "method"));
       this.methods = querySnapshot.docs.map((document) => {
         let m = new Method();
         m = Object.assign(m, document.data());

@@ -384,7 +384,7 @@ export default defineComponent({
 // DONE:ユーザIDをURLに追加する。ユーザ自身のみのデータを取得できるようにするため。
       const uid = getAuth().currentUser?.uid;
       const methodPath = `users/${uid}/method`;
-      await addDoc(collection(db, methodPath), {
+      await addDoc(collection(db, "users", String(uid), "method"), {
         methodName: form.methodName,
         typeOfCoffeePowder: form.typeOfCoffeePowder,
         amountOfCoffeePowder: form.amountOfCoffeePowder,
