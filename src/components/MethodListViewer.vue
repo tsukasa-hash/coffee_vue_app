@@ -95,6 +95,7 @@ import { defineComponent } from "vue";
 import {
   collection, deleteDoc, doc, getDocs,
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import Method from "./method/Method";
 import MethodDetailViewer from "./MethodDetailViewer.vue";
 import { db } from "../firebase";
@@ -149,7 +150,9 @@ export default defineComponent({
     // TODO: firestoreの処理を1つにまとめる
     // TODO:Procedureのtimeをnumberで受け取る。今はwarningが出ている
     async getMethodsFromFirestore() {
-      const querySnapshot = await getDocs(collection(db, "method"));
+const uid = getAuth().currentUser?.uid;
+      const methodPath = `users/${uid}/method`;
+      const querySnapshot = await getDocs(collection(db, methodPath));
       this.methods = querySnapshot.docs.map((document) => {
         let m = new Method();
         m = Object.assign(m, document.data());

@@ -299,6 +299,7 @@ import { defineComponent, nextTick, reactive } from "vue";
 import {
   addDoc, collection,
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import useVuelidate from "@vuelidate/core";
 import {
   required, minValue, between, maxValue, integer, numeric,
@@ -380,7 +381,10 @@ export default defineComponent({
     const v$ = useVuelidate(rules, form);
 
     const registerMethod = async () => {
-      await addDoc(collection(db, "method"), {
+// DONE:ユーザIDをURLに追加する。ユーザ自身のみのデータを取得できるようにするため。
+      const uid = getAuth().currentUser?.uid;
+      const methodPath = `users/${uid}/method`;
+      await addDoc(collection(db, methodPath), {
         methodName: form.methodName,
         typeOfCoffeePowder: form.typeOfCoffeePowder,
         amountOfCoffeePowder: form.amountOfCoffeePowder,
