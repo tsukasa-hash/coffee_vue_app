@@ -5,16 +5,36 @@
       <router-link
         to="/"
         class="text-dark"
+        @click="logout"
       >
-        トップページに戻る
+        ログアウト
       </router-link>
     </section>
     <router-view />
   </div>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+import { FirebaseError } from "firebase/app";
+import { defineComponent } from "vue";
+import { auth } from "./firebase";
+
+export default defineComponent({
+  setup() {
+    const logout = () => {
+      auth.signOut()
+        .then(() => {
+          console.log("ログアウトしました");
+        })
+        .catch((error: FirebaseError) => {
+          console.error("ログアウトに失敗しました", error);
+        });
+    };
+    return {
+      logout,
+    };
+  },
+});
 </script>
 
 <style>

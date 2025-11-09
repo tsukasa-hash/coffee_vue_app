@@ -25,14 +25,14 @@
       class="btn btn-light shadow-sm"
       @click="login"
     >
-      Log In
+      ログイン
     </button>
     <!-- TODO:ユーザ登録ページを作成する -->
     <button
       class="btn btn-light shadow-sm"
       @click="showUserRegisterPage"
     >
-      Sign Up
+      新規登録
     </button>
     <p
       v-if="errMsg"
@@ -47,12 +47,6 @@
     >
       top pageへ遷移
     </button>
-    <button
-      class="btn btn-light shadow-sm"
-      @click="logout"
-    >
-      Log Out
-    </button>
   </article>
 </template>
 <script lang="ts">
@@ -62,9 +56,7 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "../firebase";
-// import { auth } from "../main";
 
-// const auth = getAuth();
 export default defineComponent({
   data(): {
     email: string;
@@ -112,15 +104,6 @@ export default defineComponent({
       } else {
         this.errMsg = "ログインに失敗しました";
       }
-    },
-    logout() {
-      auth.signOut()
-        .then(() => {
-          console.log("ログアウトしました");
-        })
-        .catch((error: FirebaseError) => {
-          console.error("ログアウトに失敗しました", error);
-        });
     },
     async showTopPage() {
       try {
