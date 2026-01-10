@@ -4,7 +4,7 @@
     <div class="container">
       <form id="c_form-h">
         <!-- <form @submit.prevent="registerUser"> -->
-        <!-- <div class="form-group row">
+        <div class="form-group row">
           <label
             for="username"
             class="col-md-2 col-form-label"
@@ -18,7 +18,7 @@
             >
           </span>
           <span class="col-md-6 form-validation-NG-col" />
-        </div> -->
+        </div>
         <div class="form-group row">
           <label
             for="email"
@@ -65,7 +65,9 @@
 import { defineComponent, reactive } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { FirebaseError } from "firebase/app";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import {
+ createUserWithEmailAndPassword, sendEmailVerification, updateProfile,
+} from "firebase/auth";
 import { auth } from "../firebase";
 
 export default defineComponent({
@@ -93,6 +95,17 @@ export default defineComponent({
       // DONE:メールアドレス宛にメールを送り、メールアドレスが使えることを確認する
       createUserWithEmailAndPassword(auth, form.email, form.password)
         .then((userCredential) => {
+          // TODO:画面表示名を登録する
+          updateProfile(userCredential.user, {
+            displayName: form.username,
+            photoURL: "",
+          })
+            .then(() => {
+              console.log("プロフィールの更新に成功しました。");
+            })
+            .catch((error: FirebaseError) => {
+              alert(error.message);
+            });
           sendEmailVerification(userCredential.user)
             .then(() => {
               alert("メールを送信しました。メール内のリンクをクリックしてメールアドレスの認証を完了させてください。");

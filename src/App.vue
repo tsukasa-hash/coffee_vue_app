@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="py-2 px-2 text-end page-header">
-      ゲスト名
+      {{ displayName }}
       <router-link
         to="/"
         class="text-dark"
@@ -16,11 +16,14 @@
 
 <script lang="ts">
 import { FirebaseError } from "firebase/app";
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 
 export default defineComponent({
   setup() {
+    // a@a.com 123456
+    const displayName = ref("");
     const logout = () => {
       auth.signOut()
         .then(() => {
@@ -29,8 +32,17 @@ export default defineComponent({
           console.error("ログアウトに失敗しました", error);
         });
     };
+
+    onMounted(() => {
+      // ログイン状態の変化を監視する。ログアウトするときにログイン状態が変化するので、そのタイミングで表示名もnullになる。
+      onAuthStateChanged(auth, (user) => {
+        displayName.value = user ? user.displayName || "" : "";
+      });
+    });
+
     return {
       logout,
+      displayName,
     };
   },
 });
