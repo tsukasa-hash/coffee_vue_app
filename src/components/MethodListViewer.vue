@@ -167,7 +167,8 @@ const uid = getAuth().currentUser?.uid;
           "本当に削除しますか？",
           {
             onLeftClick: async () => {
-              await deleteDoc(doc(db, "method", methodId));
+      const uid = getAuth().currentUser?.uid;
+              await deleteDoc(doc(db, "users", String(uid), "method", methodId));
               // DONE: 削除したときにメソッドを取得し直し、削除したメソッドを画面で見えないようにする
               this.getMethodsFromFirestore().catch(console.error);
             },
