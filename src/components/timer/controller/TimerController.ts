@@ -12,6 +12,11 @@ export class NormalTimerController implements TimerController {
   private tick: number = 0;
 
   execute(t: Timer): void {
+    // タイマーの初期値が0秒の場合、何もしない
+    // TODO:実装場所がここで良いか要検討
+    if (t.getInitialTime() === 0) {
+      return;
+    }
     t.setRunning();
     this.initialize(t);
     const startTime = Date.now();

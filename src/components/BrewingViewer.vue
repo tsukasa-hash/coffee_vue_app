@@ -70,6 +70,8 @@ export default defineComponent({
           this.minutes = this.timerFSM.getMinutes();
           this.seconds = this.timerFSM.getSeconds();
         }
+        // 初期値が0秒の場合、スタートボタンを無効にする。ただし、メソッド登録時に時間が0は登録できないようにしてようにしているので、通常はここに来ることはないはず。
+        this.disabledStartButton = newVal === 0;
       },
       immediate: true,
     },
@@ -107,6 +109,7 @@ export default defineComponent({
       // DONE:ストップを押した後にスタートを押すと、中断したところから再開したい
       this.timerFSM?.start(); // null チェックして安全に呼び出し
       // TODO:Timerの状態によって活性制御する。
+      // TODO:タイマーの初期値が0秒の場合、スタートボタンを押せないようにする
       this.disabledStartButton = true;
       this.disabledStopButton = false;
       this.disabledResetButton = true;

@@ -181,6 +181,9 @@
           >
             +追加
           </button>
+          <span class="form-validation-NG-col">
+            {{ procedureValidationNgMessage }}
+          </span>
         </div>
         <table>
           <thead>
@@ -208,6 +211,10 @@
               v-for="(row, index) in form.rows"
               :key="index"
             >
+              <!-- <DripProcedures
+                :procedure="row"
+                :vuelidate="v$.rows[index]"
+              /> -->
               <td>
                 <select
                   v-model="row.description"
@@ -253,7 +260,6 @@
                 <input
                   v-model="row.time"
                   type="number"
-                  class="form-control"
                 >
               </td>
               <td>
@@ -281,12 +287,12 @@
       >
         登録
       </button>
-      <button
+      <!-- <button
         class="btn btn-primary"
         @click="update"
       >
         更新
-      </button>
+      </button> -->
     </div>
     <router-link to="/top">
       メニューに戻る
@@ -295,7 +301,9 @@
 </template>
 <script lang="ts">
 /* eslint-disable import/no-cycle */
-import { defineComponent, nextTick, reactive } from "vue";
+import {
+ defineComponent, nextTick, reactive, ref,
+} from "vue";
 import {
   addDoc, collection,
 } from "firebase/firestore";
@@ -308,10 +316,14 @@ import { useRouter } from "vue-router";
 import { db } from "../firebase";
 // import Procedure from "./method/Procedure";
 import showTwoButtonDialogWithEachMethod from "./dialog/TwoButtonDialogService";
+// import DripProcedures from "./DripProcedures.vue";
 // NOTE:error  Dependency cycle via ./router:12  import/no-cycle
 //  NOTE:Vulidateを使うためにComposition APIに変換した
 
 export default defineComponent({
+  // components: {
+  //   DripProcedures,
+  // },
   setup() {
     const form = reactive({
       methodName: "",
@@ -365,7 +377,6 @@ export default defineComponent({
       memo: { $autoDirty: true },
       rows: {
         $autoDirty: true,
-        // required,
         $each: {
           description: { $autoDirty: true, required },
           amount: {
@@ -383,7 +394,6 @@ export default defineComponent({
     const registerMethod = async () => {
 // DONE:ユーザIDをURLに追加する。ユーザ自身のみのデータを取得できるようにするため。
       const uid = getAuth().currentUser?.uid;
-      const methodPath = `users/${uid}/method`;
       await addDoc(collection(db, "users", String(uid), "method"), {
         methodName: form.methodName,
         typeOfCoffeePowder: form.typeOfCoffeePowder,
@@ -402,10 +412,40 @@ export default defineComponent({
         })),
       });
     };
+    // TODO:手順の入力チェックをvuelidateで実装する。
+    const procedureValidationNgMessage = ref("");
+    const procedureValidationIsOk = (): boolean => {
+      procedureValidationNgMessage.value = "";
+      let hasError = false;
+      form.rows.forEach((row) => {
+        if (row.description === "") {
+          hasError = true;
+          procedureValidationNgMessage.value = "手順の詳細を選択してください。";
+        }
+        if (row.amount < 0) {
+          hasError = true;
+          procedureValidationNgMessage.value += "お湯の量は0以上を入力してください。";
+        }
+        if (!Number.isInteger(row.amount)) {
+          hasError = true;
+          procedureValidationNgMessage.value += "お湯の量は整数を入力してください。";
+        }
+        if (row.time < 1) {
+          hasError = true;
+          procedureValidationNgMessage.value += "時間は1以上を入力してください。";
+        }
+        if (!Number.isInteger(row.time)) {
+          hasError = true;
+          procedureValidationNgMessage.value += "時間は整数を入力してください。";
+        }
+      });
+      return !hasError;
+    };
     const formValidationNG = async (): Promise<boolean> => {
       const result = await v$.value.$validate();
+
       // 検証結果にエラーがあればfalseが返るため、NGならtrueを返す。
-      return !result;
+      return !result || !procedureValidationIsOk();
     };
     const router = useRouter();
     const registerForFirestore = async () => {
@@ -515,18 +555,35 @@ export default defineComponent({
     };
     // TODO:手順の入力チェックのエラーメッセージを表示させる。まずは自力で作る。
     // const descriptionValidationNgMessage = (index: number) => {
-      // if (!v$.value.rows.$dirty) return index;
-      // console.log(form.rows[0]);
+    //   if (!v$.value.rows.$dirty) return index;
+    //   console.log(form.rows[0]);
 
-    // console.log(v$.value.rows.$validate());
-
-    // return index;
-    // return index;
     // if (!v$.value.rows[index]?.description.$dirty) return "";
     // v$.value.rows.forEach((element) => {
     //   if (!element.description.required.$response) return "必須項目です";
     // });
     // if (!v$.value.rows.description.required.$response) return "必須項目です";
+    // return index;
+    // };
+    // const timeValidationNgMessage = () => {
+    //   if (!v$.value.rows.$dirty) return "";
+    //   // if (!v$.value.rows.time?.required.$response) return "必須項目です";
+    //   return "";
+    // };
+    // const rowsValidationNgMessage = () => {
+    //   console.log("rowsValidationNgMessage()が実行されました。");
+
+    //   if (!v$.value.rows.$dirty) return "";
+      // if (!v$.value.rows.$each.time.required) return "必須項目です";
+      // v$.value.rows.$each((element, index) => {
+        // if (!element.time.required.$response) {
+        //   console.log("rowsValidationNgMessage():必須項目です");
+          // return "validation-NG";
+        // }
+      // });
+    //   console.log(v$.value.rows);
+
+    //   return "";
     // };
     const rowHasOneElement = () => form.rows.length === 1;
 
@@ -563,7 +620,10 @@ export default defineComponent({
       temperatureOfHotWaterValidationNgMessage,
       typeOfDripperValidationNgMessage,
       // descriptionValidationNgMessage,
+      // timeValidationNgMessage,
+      // rowsValidationNgMessage,
       rowHasOneElement,
+      procedureValidationNgMessage,
     };
   },
 });
