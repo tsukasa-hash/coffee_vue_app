@@ -9,6 +9,10 @@ COPY package.json package-lock.json ./
 # lockfile完全再現
 RUN npm ci
 
+# Firebase CLIをグローバルにインストール
+# あとで追加したためあっっているかはわからない
+RUN npm install -g firebase-tools
+
 # ソースコードコピー
 COPY . .
 

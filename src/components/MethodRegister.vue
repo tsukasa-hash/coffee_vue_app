@@ -553,7 +553,7 @@ export default defineComponent({
       if (!v$.value.typeOfDripper.required.$response) return "必須項目です";
       return "";
     };
-    // TODO:手順の入力チェックのエラーメッセージを表示させる。まずは自力で作る。
+    // DONE:手順の入力チェックのエラーメッセージを表示させる。まずは自力で作る。
     // const descriptionValidationNgMessage = (index: number) => {
     //   if (!v$.value.rows.$dirty) return index;
     //   console.log(form.rows[0]);

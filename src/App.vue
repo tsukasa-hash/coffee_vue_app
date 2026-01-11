@@ -22,7 +22,7 @@ import { auth } from "./firebase";
 
 export default defineComponent({
   setup() {
-    // a@a.com 123456
+    // TODO:ユーザ情報を更新できるようにする。ユーザ名をクリックしてプロフィール編集ページへ遷移するなど
     const displayName = ref("");
     const logout = () => {
       auth.signOut()

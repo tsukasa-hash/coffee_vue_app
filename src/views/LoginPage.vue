@@ -41,12 +41,12 @@
       {{ errMsg }}
     </p>
     <br>
-    <button
+    <!-- <button
       class="btn btn-light shadow-sm"
       @click="showTopPage"
     >
       top pageへ遷移
-    </button>
+    </button> -->
   </article>
 </template>
 <script lang="ts">

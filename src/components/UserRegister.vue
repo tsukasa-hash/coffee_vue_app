@@ -159,8 +159,7 @@ export default defineComponent({
                       photoURL: "",
                     })
                       .then(async () => {
-                        console.log("プロフィールの更新に成功しました。");
-                        await router.push("/top");
+                        await router.push("/");
                       })
                       .catch((error: FirebaseError) => {
                         console.log(error);
