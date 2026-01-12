@@ -8,7 +8,7 @@
         <div class="form-group row">
           <label
             for="methodName"
-            class="col-md-2 col-form-label"
+            class="col-md-3 col-form-label text-start"
           >メソッド名</label>
           <span
             class="col-md-4"
@@ -21,7 +21,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ methodNameValidationNgMessage() }}
           </span>
@@ -29,7 +29,7 @@
         <div class="form-group row">
           <label
             for="typeOfCoffeePowder"
-            class="col-md-2 col-form-label"
+            class="col-md-3 col-form-label text-start"
           >コーヒーの粉</label>
           <span
             class="col-md-4"
@@ -42,7 +42,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ typeOfCoffeePowderValidationNgMessage() }}
           </span>
@@ -50,8 +50,8 @@
         <div class="form-group row">
           <label
             for="amountOfCoffeePowder"
-            class="col-md-2 col-form-label"
-          >コーヒー粉の量</label>
+            class="col-md-3 col-form-label text-start"
+          >コーヒー粉の量（g）</label>
           <span
             class="col-md-4"
           >
@@ -63,7 +63,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ amountOfCoffeePowderValidationNgMessage() }}
           </span>
@@ -71,8 +71,8 @@
         <div class="form-group row">
           <label
             for="amountOfACupOfCoffee"
-            class="col-md-2 col-form-label"
-          >コーヒーの量</label>
+            class="col-md-3 col-form-label text-start"
+          >コーヒーの量（ml）</label>
           <span
             class="col-md-4"
           >
@@ -84,7 +84,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ amountOfACupOfCoffeeValidationNgMessage() }}
           </span>
@@ -92,8 +92,8 @@
         <div class="form-group row">
           <label
             for="amountOfHotWater"
-            class="col-md-2 col-form-label"
-          >抽出に必要なお湯の量</label>
+            class="col-md-3 col-form-label text-start"
+          >抽出に必要なお湯の量（ml）</label>
           <span
             class="col-md-4"
           >
@@ -105,7 +105,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ amountOfHotWaterValidationNgMessage() }}
           </span>
@@ -113,8 +113,8 @@
         <div class="form-group row">
           <label
             for="temperatureOfHotWater"
-            class="col-md-2 col-form-label"
-          >お湯の温度</label>
+            class="col-md-3 col-form-label text-start"
+          >お湯の温度(℃)</label>
           <span
             class="col-md-4"
           >
@@ -126,7 +126,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ temperatureOfHotWaterValidationNgMessage() }}
           </span>
@@ -134,7 +134,7 @@
         <div class="form-group row">
           <label
             for="typeOfDripper"
-            class="col-md-2 col-form-label"
+            class="col-md-3 col-form-label text-start"
           >ドリッパーの種類</label>
           <span
             class="col-md-4"
@@ -147,7 +147,7 @@
             >
           </span>
           <span
-            class="col-md-6 form-validation-NG-col"
+            class="col-md-5 form-validation-NG-col"
           >
             {{ typeOfDripperValidationNgMessage() }}
           </span>
@@ -155,8 +155,7 @@
         <div class="form-group row">
           <label
             for="memo"
-            class="col-md-2 col-form-label"
-            style=""
+            class="col-md-3 col-form-label text-start"
           >メモ</label>
           <span
             class="col-md-4"
@@ -192,16 +191,16 @@
                 詳細
               </th>
               <th class="col-md-2">
-                お湯の量
+                お湯の量(ml)
               </th>
               <th class="col-md-2">
-                合計量
+                合計量(ml)
               </th>
               <th class="col-md-2">
-                時間
+                時間(秒)
               </th>
               <th class="col-md-2">
-                合計時間
+                合計時間(秒)
               </th>
               <th class="col-md-2" />
             </tr>

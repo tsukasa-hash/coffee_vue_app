@@ -36,7 +36,7 @@ export default defineComponent({
     onMounted(() => {
       // ログイン状態の変化を監視する。ログアウトするときにログイン状態が変化するので、そのタイミングで表示名もnullになる。
       onAuthStateChanged(auth, (user) => {
-        displayName.value = user ? user.displayName || "" : "";
+        displayName.value = user ? `${user.displayName}さん` || "" : "";
       });
     });
 
