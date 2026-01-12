@@ -2,19 +2,25 @@
   <div class="container">
     <!-- TODO:開く事に変更してユーザに寄り添うコメントを表示したい -->
     <h1>今日もコーヒーを淹れよう</h1>
-
-    <router-link to="/method_register">
-      <!-- 抽出を登録する -->
-      <span class="material-icons">
-        coffee
-      </span>
-      <img
-        src="../assets/Icon Button.svg"
-        alt="登録アイコン"
-        style="width: 20px; height: 20px;"
-      >
-    </router-link>
     <div class="bl_flexContainer method-list-container">
+      <router-link
+        to="/method_register"
+        class="text-decoration-none align-middle register"
+      >
+        <div
+          class="card-radius card align-middle
+        d-flex justify-content-center align-items-center register__card"
+        >
+          <h2 class="register__card-title">
+            抽出メソッドを登録しよう
+          </h2>
+          <img
+            src="../assets/Icon Button.svg"
+            alt="登録アイコン"
+            class="register__card-icon"
+          >
+        </div>
+      </router-link>
       <div
         v-for="method in methods"
         :key="method.id"
@@ -259,5 +265,21 @@ padding: 0 5px;
 }
 .method-list-container:hover::-webkit-scrollbar-thumb{
   background-color: gray;
+}
+.register
+.register__card {
+  background-color: #f8f9fa;
+  height: 233px;
+  width: 365px;
+}
+.register__card-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 0rem;
+  padding: 8px 16px;
+}
+register__card-icon {
+  height: 20px;
+  width: 20px;
 }
 </style>
